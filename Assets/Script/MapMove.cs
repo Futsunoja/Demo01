@@ -16,8 +16,14 @@ public class MapMove : MonoBehaviour
     int loaMap;
     bool l, m;
 
+    public AudioSource audMap;
+    public AudioClip MapBGM, Hit;
+
     private void Start()
     {
+        audMap.clip = MapBGM;
+        audMap.Play();
+
         loaMap = 1;                                                                    //讀取玩家檔案的地圖編號
         transform.position = map[loaMap].transform.position;                           //初始畫面，玩家位置
         place.GetComponent<Text>().text = map[loaMap].name;                            //初始畫面，地圖名稱

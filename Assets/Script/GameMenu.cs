@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameMenu : MonoBehaviour
@@ -7,13 +9,23 @@ public class GameMenu : MonoBehaviour
     Vector3 T = new Vector3(-2, -0.8f, 0);
     Vector3 C = new Vector3(-2, -2, 0);
     Vector3 Q = new Vector3(-2, -3.2f, 0);
-    Vector3 CHA = new Vector3(15, 15, 1);
     bool i;
+    public AudioSource aud;
+    public AudioClip MenuBGM, Hit;
+
+    public GameObject[] Talk;
 
     private void Start()
     {
+        aud.clip = MenuBGM;
+        aud.Play();
         Screen.SetResolution(1280, 720, false);
         pig.position = T;
+        for (int k = 0; k <= 3; k++)
+        {
+            Talk[k].GetComponent<RectTransform>().localScale = Vector3.zero;
+        }
+        
     }
 
     private void Update()
@@ -56,9 +68,21 @@ public class GameMenu : MonoBehaviour
 
     private void MenuCh()
     {
+        int j;
         if (Input.GetKeyDown(KeyCode.J))
         {
+            if (i == false)
+            {
+            aud.PlayOneShot(Hit);
+            }
+            
             i = true;
+            if (pig.position == T)
+            {
+                j = Random.Range(0, 4);
+                StartCoroutine(MenuTalk(j));
+                print("" + j);
+            }
             if (pig.position == C)
             {
                 Invoke("DelayStartGame", 1f);
@@ -68,6 +92,18 @@ public class GameMenu : MonoBehaviour
                 Invoke("DelayQuitGame", 1f);
             }
         }
+    }
+
+    IEnumerator MenuTalk(int t)
+    {
+        while (Talk[t].GetComponent<RectTransform>().localScale != Vector3.one)
+        {
+            Talk[t].GetComponent<RectTransform>().localScale += new Vector3(0.2f, 0.2f, 0.2f);
+            yield return new WaitForSeconds(0.033f);
+        }
+        i = false;
+        yield return new WaitForSeconds(2f);
+        Talk[t].GetComponent<RectTransform>().localScale = Vector3.zero;
     }
 
     public void DelayStartGame()

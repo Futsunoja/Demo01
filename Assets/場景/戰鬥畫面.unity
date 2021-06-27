@@ -746,7 +746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02c15832dadbb74292ba52d922f877d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aud: {fileID: 259004886}
+  audBattle: {fileID: 259004886}
   BattleBGM: {fileID: 8300000, guid: 0f00d378a760a8b41b3da60a099ad144, type: 3}
   WonBGM: {fileID: 8300000, guid: cb0c9edd7a697c647ab7aba0f482c2b8, type: 3}
   LoseBGM: {fileID: 8300000, guid: 5fcf47940e9c187468eac1d658fef5a5, type: 3}

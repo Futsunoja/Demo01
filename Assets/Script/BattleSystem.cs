@@ -7,7 +7,7 @@ public enum BattleState { START, CHOOSEACTION,PLAYERTURN, ENEMYTURN, ENDTRUN, WO
 
 public class BattleSystem : MonoBehaviour
 {
-    public AudioSource aud;
+    public AudioSource audBattle;
     public AudioClip BattleBGM, WonBGM, LoseBGM;
 
     public GameObject c1, c2, c3, c4;
@@ -51,8 +51,8 @@ public class BattleSystem : MonoBehaviour
 
     private void Start()
     {
-        aud.clip = BattleBGM;
-        aud.Play();
+        audBattle.clip = BattleBGM;
+        audBattle.Play();
         Screen.SetResolution(1280, 720, false);    //固定視窗大小
 
         c1.transform.localPosition = c;
@@ -961,8 +961,8 @@ public class BattleSystem : MonoBehaviour
 
         if (state == BattleState.WON)    //勝利
         {
-            aud.clip = WonBGM;
-            aud.Play();
+            audBattle.clip = WonBGM;
+            audBattle.Play();
             WonSettlement.SetActive(true);
             Won.GetComponent<Text>().text = "你打倒了" + enemyUnit.unitName;
             yield return new WaitForSeconds(1f);
@@ -1033,8 +1033,8 @@ public class BattleSystem : MonoBehaviour
         
         if (state == BattleState.LOST)    //戰敗
         {
-            aud.clip = LoseBGM;
-            aud.Play();
+            audBattle.clip = LoseBGM;
+            audBattle.Play();
             LoseSettlement.SetActive(true);
             Losechoose = true;
         }
