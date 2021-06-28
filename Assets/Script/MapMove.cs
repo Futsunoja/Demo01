@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 public class MapMove : MonoBehaviour
 {
@@ -10,14 +11,18 @@ public class MapMove : MonoBehaviour
     public GameObject[] pla;
     public GameObject[] tintro;
     public GameObject place, intro;
-    public GameObject MapManu, Girl, go, tra, forg, sav, loa, backmenu;
+    public GameObject MapMenu, Girl, talk, go, tra, forg, sav, loa, backmenu;
+    public GameObject[] cannotuse;
+    public GameObject[] direction;
     float i = 4;
     public int[] j;
     int loaMap;
     bool l, m;
 
     public AudioSource audMap;
-    public AudioClip MapBGM, Hit;
+    public AudioClip MapBGM, Hit, OpenMenu;
+
+    bool girlani, step1, step2, step3;
 
     private void Start()
     {
@@ -32,6 +37,20 @@ public class MapMove : MonoBehaviour
         pla[1].SetActive(false);
         m = true;                                                                      //初始畫面，小女孩介面打開
         go.GetComponent<Image>().color = Color.green;
+        girlani = true;
+        step1 = true;
+        Girl.transform.position = new Vector3(-130, 371, 0);
+        talk.transform.localScale = Vector3.zero;
+        go.transform.localScale = Vector3.zero;
+        tra.transform.localScale = Vector3.zero;
+        forg.transform.localScale = Vector3.zero;
+        sav.transform.localScale = Vector3.zero;
+        loa.transform.localScale = Vector3.zero;
+        backmenu.transform.localScale = Vector3.zero;
+        for(int can = 0; can <= 3; can++)
+            cannotuse[can].GetComponent<Image>().fillAmount = 0;
+        for(int dir=0; dir <= 3; dir++)
+            direction[dir].SetActive(false);
     }
 
     private void Update()
@@ -42,11 +61,14 @@ public class MapMove : MonoBehaviour
         {
             place.GetComponent<Text>().text = "";
             intro.GetComponent<Text>().text = "";
+            for (int dir = 0; dir <= 3; dir++)
+                direction[dir].SetActive(false);
         }
 
-        mapManu();
+        mapMenu();
+        menuAni();
 
-        if (m == false)  //小女孩介面關掉時
+        if (m == false)
         {
             if (k.ToList().Count == 0)
             {
@@ -64,14 +86,16 @@ public class MapMove : MonoBehaviour
                 pla[1].SetActive(true);
                 l = true;
             }
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Q))
             {
+                audMap.PlayOneShot(OpenMenu);
                 m = true;
             }
             if (Input.GetKeyDown(KeyCode.J))
             {
                 if (transform.position == map[14].transform.position)
                 {
+                    audMap.PlayOneShot(Hit);
                     SceneManager.LoadScene("戰鬥畫面");
                 }
             }
@@ -92,7 +116,7 @@ public class MapMove : MonoBehaviour
             m13();
             m14();
             #endregion
-        }
+        }  //小女孩介面關掉時
     }
 
 
@@ -102,6 +126,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[0].transform.position)
         {
+            Direction("A");
             place.GetComponent<Text>().text = map[0].name;
             intro.GetComponent<Text>().text = tintro[0].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.A))
@@ -124,6 +149,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[1].transform.position)
         {
+            Direction("WASD");
             place.GetComponent<Text>().text = map[1].name;
             intro.GetComponent<Text>().text = tintro[1].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
@@ -199,6 +225,7 @@ public class MapMove : MonoBehaviour
         float speed = i * Time.deltaTime;
         if (transform.position == map[2].transform.position)
         {
+            Direction("W");
             place.GetComponent<Text>().text = map[2].name;
             intro.GetComponent<Text>().text = tintro[2].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.W))
@@ -221,6 +248,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[3].transform.position)
         {
+            Direction("S");
             place.GetComponent<Text>().text = map[3].name;
             intro.GetComponent<Text>().text = tintro[3].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.S))
@@ -259,6 +287,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[4].transform.position)
         {
+            Direction("WAD");
             place.GetComponent<Text>().text = map[4].name;
             intro.GetComponent<Text>().text = tintro[4].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
@@ -305,6 +334,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[5].transform.position)
         {
+            Direction("WS");
             place.GetComponent<Text>().text = map[5].name;
             intro.GetComponent<Text>().text = tintro[5].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.S))
@@ -339,6 +369,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[6].transform.position)
         {
+            Direction("S");
             place.GetComponent<Text>().text = map[6].name;
             intro.GetComponent<Text>().text = tintro[6].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.S))
@@ -361,6 +392,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[7].transform.position)
         {
+            Direction("ASD");
             place.GetComponent<Text>().text = map[7].name;
             intro.GetComponent<Text>().text = tintro[7].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
@@ -407,6 +439,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[8].transform.position)
         {
+            Direction("AD");
             place.GetComponent<Text>().text = map[8].name;
             intro.GetComponent<Text>().text = tintro[8].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
@@ -441,6 +474,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[9].transform.position)
         {
+            Direction("D");
             place.GetComponent<Text>().text = map[9].name;
             intro.GetComponent<Text>().text = tintro[9].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
@@ -463,6 +497,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[10].transform.position)
         {
+            Direction("WAD");
             place.GetComponent<Text>().text = map[10].name;
             intro.GetComponent<Text>().text = tintro[10].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.W))
@@ -509,6 +544,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[11].transform.position)
         {
+            Direction("AD");
             place.GetComponent<Text>().text = map[11].name;
             intro.GetComponent<Text>().text = tintro[11].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.A))
@@ -551,6 +587,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[12].transform.position)
         {
+            Direction("A");
             place.GetComponent<Text>().text = map[12].name;
             intro.GetComponent<Text>().text = tintro[12].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.A))
@@ -581,6 +618,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[13].transform.position)
         {
+            Direction("AD");
             place.GetComponent<Text>().text = map[13].name;
             intro.GetComponent<Text>().text = tintro[13].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
@@ -615,6 +653,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[14].transform.position)
         {
+            Direction("D");
             place.GetComponent<Text>().text = map[14].name;
             intro.GetComponent<Text>().text = tintro[14].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
@@ -633,11 +672,10 @@ public class MapMove : MonoBehaviour
     }
     #endregion
 
-    private void mapManu()
+    private void mapMenu()
     {
-        if (m == true)
+        if (m == true && girlani == false)
         {
-            MapManu.SetActive(true);
             if (Input.GetKeyDown(KeyCode.W))
             {
                 if (go.GetComponent<Image>().color == Color.green)
@@ -741,26 +779,162 @@ public class MapMove : MonoBehaviour
             {
                 if (go.GetComponent<Image>().color == Color.green)
                 {
+                    audMap.PlayOneShot(Hit);
                     m = false;
                 }
                 if (backmenu.GetComponent<Image>().color == Color.green)
                 {
+                    audMap.PlayOneShot(Hit);
                     SceneManager.LoadScene("主畫面");
                 }
             }
         }
         else if(m == false)
         {
-            MapManu.SetActive(false);
+            girlani = true;
+            step1 = true;
+            Girl.transform.position = new Vector3(-130, 371, 0);
+            talk.transform.localScale = Vector3.zero;
+            go.transform.localScale = Vector3.zero;
+            tra.transform.localScale = Vector3.zero;
+            forg.transform.localScale = Vector3.zero;
+            sav.transform.localScale = Vector3.zero;
+            loa.transform.localScale = Vector3.zero;
+            backmenu.transform.localScale = Vector3.zero;
+            for (int can = 0; can <= 3; can++)
+                cannotuse[can].GetComponent<Image>().fillAmount = 0;
+            MapMenu.SetActive(false);
         }
     }
 
-    //   private void TEST()
-    //   float step = 6 * Time.deltaTime;
-    //   {
-    //       if (transform.position == m11 || py != m14.y)
-    //       {
-    //           transform.position = Vector3.MoveTowards(transform.position, m14, step);
-    //       }
-    //   }
+    private void menuAni()
+    {
+        if (m == true && girlani == true && step1 == true)    //小女孩進入
+        {
+            MapMenu.SetActive(true);
+
+            Girl.transform.position = Vector3.MoveTowards(Girl.transform.position, new Vector3(110, 371, 0), 360 * Time.deltaTime);
+            if(Girl.transform.position == new Vector3(110, 371, 0))
+            {
+                step1 = false;
+                step2 = true;
+            }
+        }
+        if (m == true && girlani == true && step2 == true)    //對話展開
+        {
+            talk.transform.localScale = Vector3.MoveTowards(talk.transform.localScale, Vector3.one, 6f * Time.deltaTime);
+            if (talk.transform.localScale == Vector3.one)
+            {
+                step2 = false;
+                step3 = true;
+            }
+        }
+        if (m == true && girlani == true && step3 == true)    //選項展開
+        {
+            go.transform.localScale = Vector3.MoveTowards(go.transform.localScale, Vector3.one, 6f * Time.deltaTime);
+            if (go.transform.localScale.x >= 0.2f)
+            {
+                tra.transform.localScale = Vector3.MoveTowards(tra.transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                if (tra.transform.localScale.x >= 0.2f)
+                {
+                    forg.transform.localScale = Vector3.MoveTowards(forg.transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                    if (forg.transform.localScale.x >= 0.2f)
+                    {
+                        sav.transform.localScale = Vector3.MoveTowards(sav.transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                        if (sav.transform.localScale.x >= 0.2f)
+                        {
+                            loa.transform.localScale = Vector3.MoveTowards(loa.transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                            if (loa.transform.localScale.x >= 0.2f)
+                            {
+                                backmenu.transform.localScale = Vector3.MoveTowards(backmenu.transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                                if (backmenu.transform.localScale == Vector3.one)
+                                {
+                                    for (int can = 0; can <= 3; can++)
+                                        cannotuse[can].GetComponent<Image>().fillAmount += 2 * Time.deltaTime;
+                                    if(cannotuse[0].GetComponent<Image>().fillAmount == 1)
+                                    {
+                                        step3 = false;
+                                        girlani = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }    //小女孩介面簡易動畫
+
+    private void Direction(string WASD)
+    {
+        for (int dir = 0; dir <= 3; dir++)
+            direction[dir].SetActive(false);
+        if (WASD == "D")
+            direction[0].SetActive(true);
+        if (WASD == "A")
+            direction[1].SetActive(true);
+        if (WASD == "W")
+            direction[2].SetActive(true);
+        if (WASD == "S")
+            direction[3].SetActive(true);
+        if (WASD == "WA")
+        {
+            direction[2].SetActive(true);
+            direction[1].SetActive(true);
+        }
+        if (WASD == "WS")
+        {
+            direction[2].SetActive(true);
+            direction[3].SetActive(true);
+        }
+        if (WASD == "WD")
+        {
+            direction[2].SetActive(true);
+            direction[0].SetActive(true);
+        }
+        if (WASD == "AS")
+        {
+            direction[1].SetActive(true);
+            direction[3].SetActive(true);
+        }
+        if (WASD == "AD")
+        {
+            direction[1].SetActive(true);
+            direction[0].SetActive(true);
+        }
+        if (WASD == "SD")
+        {
+            direction[3].SetActive(true);
+            direction[0].SetActive(true);
+        }
+        if (WASD == "WAS")
+        {
+            direction[2].SetActive(true);
+            direction[1].SetActive(true);
+            direction[3].SetActive(true);
+        }
+        if (WASD == "WAD")
+        {
+            direction[2].SetActive(true);
+            direction[1].SetActive(true);
+            direction[0].SetActive(true);
+        }
+        if (WASD == "WSD")
+        {
+            direction[2].SetActive(true);
+            direction[3].SetActive(true);
+            direction[0].SetActive(true);
+        }
+        if (WASD == "ASD")
+        {
+            direction[1].SetActive(true);
+            direction[3].SetActive(true);
+            direction[0].SetActive(true);
+        }
+        if (WASD == "WASD")
+        {
+            for(int dir2 = 0; dir2 <= 3; dir2++)
+                direction[dir2].SetActive(true);
+        }
+    }    //方向指標顯示隱藏
 }

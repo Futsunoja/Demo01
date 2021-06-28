@@ -2,10 +2,14 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - BattleSystem
+    - GameMenu
+    - MapMove
     - SoundManager
     - Unit
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
+    - UnityEditor.Tilemaps.GridPaletteBrushes
+    - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.TileDragAndDropManager
     Unity.Rider.Editor.dll:
@@ -23,6 +27,108 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Mask
     - UnityEngine.UI.Text
   sceneClasses:
+    "Assets/\u5834\u666F/\u4E3B\u756B\u9762.unity":
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 11252}
+    - Class: 114
+      Script: {instanceID: 11464}
+    - Class: 114
+      Script: {instanceID: 11864}
+    - Class: 114
+      Script: {instanceID: 11888}
+    - Class: 114
+      Script: {instanceID: 12816}
+    - Class: 114
+      Script: {instanceID: 13200}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    "Assets/\u5834\u666F/\u5927\u5730\u5716.unity":
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 11252}
+    - Class: 114
+      Script: {instanceID: 11382}
+    - Class: 114
+      Script: {instanceID: 11424}
+    - Class: 114
+      Script: {instanceID: 11464}
+    - Class: 114
+      Script: {instanceID: 11888}
+    - Class: 114
+      Script: {instanceID: 12816}
+    - Class: 114
+      Script: {instanceID: 13200}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
     "Assets/\u5834\u666F/\u6230\u9B25\u756B\u9762.unity":
     - Class: 1
       Script: {instanceID: 0}
@@ -65,7 +171,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12816}
     - Class: 114
-      Script: {instanceID: 13202}
+      Script: {instanceID: 13200}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -125,7 +231,7 @@ ScriptsOnlyBuild:
     className: PlayerQuitHandler
   - hash:
       serializedVersion: 2
-      Hash: 32642ddd9b3e57ece252a52a8d66e076
+      Hash: 133674ea7620675f86f115fbacec2705
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MapMove
@@ -233,7 +339,7 @@ ScriptsOnlyBuild:
     className: RectMask2D
   - hash:
       serializedVersion: 2
-      Hash: 61ca5a3b0344bd31bcf8320266bd2be7
+      Hash: 9ca7dc7bbd32656b55128d38a8ae7246
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BattleSystem
@@ -269,7 +375,7 @@ ScriptsOnlyBuild:
     className: Shadow
   - hash:
       serializedVersion: 2
-      Hash: 653e8daac023f4cb5547dd3889f979d9
+      Hash: 308ee0cea43441de07c81f6e61cfc7ae
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameMenu
@@ -479,12 +585,6 @@ ScriptsOnlyBuild:
     className: BaseInput
   - hash:
       serializedVersion: 2
-      Hash: 0e0a94bf5c2bd41de908d3075585694f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: BattleHUD
-  - hash:
-      serializedVersion: 2
       Hash: caa533b001ae39b864ba8425019e2268
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -557,5 +657,7 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   platform: 5
   scenePathNames:
+  - "Assets/\u5834\u666F/\u4E3B\u756B\u9762.unity"
+  - "Assets/\u5834\u666F/\u5927\u5730\u5716.unity"
   - "Assets/\u5834\u666F/\u6230\u9B25\u756B\u9762.unity"
-  playerPath: C:/Users/User/Desktop/BattleTest/RURORO.exe
+  playerPath: C:/Users/User/Desktop/GAMETEST/RURORO.exe
