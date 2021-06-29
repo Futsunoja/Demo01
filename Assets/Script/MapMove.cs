@@ -14,6 +14,10 @@ public class MapMove : MonoBehaviour
     public GameObject MapMenu, Girl, talk, go, tra, forg, sav, loa, backmenu;
     public GameObject[] cannotuse;
     public GameObject[] direction;
+    public GameObject maphaveeventAni;
+    public GameObject CallLittleGirl;
+    public GameObject DragonWhatToFight;
+
     float i = 4;
     public int[] j;
     int loaMap;
@@ -29,7 +33,8 @@ public class MapMove : MonoBehaviour
         audMap.clip = MapBGM;
         audMap.Play();
 
-        loaMap = 1;                                                                    //讀取玩家檔案的地圖編號
+        #region 讀取玩家存檔，建立初始畫面
+        loaMap = 0;                                                                    //讀取玩家檔案的地圖編號
         transform.position = map[loaMap].transform.position;                           //初始畫面，玩家位置
         place.GetComponent<Text>().text = map[loaMap].name;                            //初始畫面，地圖名稱
         intro.GetComponent<Text>().text = tintro[loaMap].GetComponent<Text>().text;    //初始畫面，地圖介紹
@@ -37,6 +42,10 @@ public class MapMove : MonoBehaviour
         pla[1].SetActive(false);
         m = true;                                                                      //初始畫面，小女孩介面打開
         go.GetComponent<Image>().color = Color.green;
+        CallLittleGirl.SetActive(false);
+        #endregion
+
+        #region 小女孩介面初始化
         girlani = true;
         step1 = true;
         Girl.transform.position = new Vector3(-130, 371, 0);
@@ -51,6 +60,9 @@ public class MapMove : MonoBehaviour
             cannotuse[can].GetComponent<Image>().fillAmount = 0;
         for(int dir=0; dir <= 3; dir++)
             direction[dir].SetActive(false);
+        #endregion
+
+        MapHaveEvent(14);    //地圖編號14 (巨龍山洞) 有事件
     }
 
     private void Update()
@@ -65,10 +77,7 @@ public class MapMove : MonoBehaviour
                 direction[dir].SetActive(false);
         }
 
-        mapMenu();
-        menuAni();
-
-        if (m == false)
+        if (m == false && DragonWhatToFight.activeSelf == false)
         {
             if (k.ToList().Count == 0)
             {
@@ -89,10 +98,17 @@ public class MapMove : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 audMap.PlayOneShot(OpenMenu);
+                CallLittleGirl.SetActive(false);
                 m = true;
             }
             if (Input.GetKeyDown(KeyCode.J))
             {
+                if (k.ToList().Count == 0 && transform.position != map[14].transform.position)
+                {
+                    audMap.PlayOneShot(Hit);
+                    DragonWhatToFight.SetActive(true);
+                    Invoke("CloseDragonWhatToFight", 2f);
+                }
                 if (transform.position == map[14].transform.position)
                 {
                     audMap.PlayOneShot(Hit);
@@ -117,6 +133,9 @@ public class MapMove : MonoBehaviour
             m14();
             #endregion
         }  //小女孩介面關掉時
+
+        mapMenu();
+        menuAni();
     }
 
 
@@ -803,9 +822,10 @@ public class MapMove : MonoBehaviour
             backmenu.transform.localScale = Vector3.zero;
             for (int can = 0; can <= 3; can++)
                 cannotuse[can].GetComponent<Image>().fillAmount = 0;
+            CallLittleGirl.SetActive(true);
             MapMenu.SetActive(false);
         }
-    }
+    }    //小女孩介面操作
 
     private void menuAni()
     {
@@ -937,4 +957,14 @@ public class MapMove : MonoBehaviour
                 direction[dir2].SetActive(true);
         }
     }    //方向指標顯示隱藏
+
+    private void MapHaveEvent(int i)
+    {
+        GameObject mapHaveEvent = Instantiate(maphaveeventAni, map[i].transform);
+    }    //在編號i的地圖有事件
+
+    private void CloseDragonWhatToFight()
+    {
+        DragonWhatToFight.SetActive(false);
+    }
 }
