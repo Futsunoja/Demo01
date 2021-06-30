@@ -49,9 +49,11 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11252}
+      Script: {instanceID: 11234}
     - Class: 114
-      Script: {instanceID: 11464}
+      Script: {instanceID: 11254}
+    - Class: 114
+      Script: {instanceID: 11426}
     - Class: 114
       Script: {instanceID: 11864}
     - Class: 114
@@ -61,6 +63,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 13200}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
@@ -89,22 +93,30 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 82
       Script: {instanceID: 0}
     - Class: 83
       Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
+      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11252}
+      Script: {instanceID: 11234}
     - Class: 114
-      Script: {instanceID: 11382}
+      Script: {instanceID: 11254}
     - Class: 114
-      Script: {instanceID: 11424}
+      Script: {instanceID: 11384}
     - Class: 114
-      Script: {instanceID: 11464}
+      Script: {instanceID: 11426}
+    - Class: 114
+      Script: {instanceID: 11784}
     - Class: 114
       Script: {instanceID: 11888}
     - Class: 114
@@ -153,11 +165,11 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11252}
+      Script: {instanceID: 11234}
     - Class: 114
-      Script: {instanceID: 11424}
+      Script: {instanceID: 11254}
     - Class: 114
-      Script: {instanceID: 11464}
+      Script: {instanceID: 11426}
     - Class: 114
       Script: {instanceID: 11686}
     - Class: 114
@@ -193,6 +205,12 @@ ScriptsOnlyBuild:
     - Class: 331
       Script: {instanceID: 0}
   scriptHashData:
+  - hash:
+      serializedVersion: 2
+      Hash: 89f9a1b4c64db9559e39f4a2e3bfaadd
+    assemblyName: UnityEngine.UI.dll
+    namespaceName: UnityEngine.UI
+    className: Image
   - hash:
       serializedVersion: 2
       Hash: 4bc4346a71a8df53a6b106f68ef3a190
@@ -231,7 +249,7 @@ ScriptsOnlyBuild:
     className: PlayerQuitHandler
   - hash:
       serializedVersion: 2
-      Hash: 133674ea7620675f86f115fbacec2705
+      Hash: 1c6ed8bd1661eefcaaefbfaae0631c38
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MapMove
@@ -271,12 +289,6 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
     className: TouchInputModule
-  - hash:
-      serializedVersion: 2
-      Hash: 89f9a1b4c64db9559e39f4a2e3bfaadd
-    assemblyName: UnityEngine.UI.dll
-    namespaceName: UnityEngine.UI
-    className: Image
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f

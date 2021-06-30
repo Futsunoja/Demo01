@@ -81,7 +81,6 @@ public class GameMenu : MonoBehaviour
             {
                 j = Random.Range(0, 4);
                 StartCoroutine(MenuTalk(j));
-                print("" + j);
             }
             if (pig.position == C)
             {
