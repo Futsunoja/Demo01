@@ -4,7 +4,7 @@ ScriptsOnlyBuild:
     - BattleSystem
     - GameMenu
     - MapMove
-    - SaveLoadData
+    - SaveLoadDataTest
     - SoundManager
     - StoryOpen
     - TalkOpen
@@ -412,7 +412,7 @@ ScriptsOnlyBuild:
     className: RectMask2D
   - hash:
       serializedVersion: 2
-      Hash: a8f93292901a41f40e0c99ffa53834cd
+      Hash: 1162a800d6247cd22b8e344aa1811266
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BattleSystem
@@ -472,7 +472,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: ee01c73351c1bb30c862b75304a7961f
+      Hash: 419089a6c74bc2144e6cb5afd5c55907
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Unit
@@ -559,7 +559,7 @@ ScriptsOnlyBuild:
       Hash: 8173abd8640bf3cd88059156affe189b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: SaveLoadData
+    className: SaveLoadDataTest
   - hash:
       serializedVersion: 2
       Hash: 5ad4aa237d47ac2bab17bacb672edf7a
