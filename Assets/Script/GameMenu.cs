@@ -108,7 +108,7 @@ public class GameMenu : MonoBehaviour
     public void DelayStartGame()
     {
         i = false;
-        SceneManager.LoadScene("大地圖");
+        SceneManager.LoadScene("劇情_開頭");
     }
 
     public void DelayQuitGame()

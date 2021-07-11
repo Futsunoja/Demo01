@@ -20,17 +20,6 @@ public class Unit : MonoBehaviour
     public int UndebuffPoison;
     public int speed;
 
- //   private void Awake()
- //  {
- //       if (unitName == "勇者")
- //       {
- //           maxHp = unitLevel * 10;
- //           currentHp = maxHp;
- //           atk = unitLevel * 5;
- //           def = unitLevel * 4;
- //       }
- //  }
-
     public bool TakeDamage(int dmg)
     {
         currentHp -= dmg;

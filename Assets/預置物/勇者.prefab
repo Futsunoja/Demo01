@@ -90,7 +90,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8811839197925077453}
-  - component: {fileID: 7112831633894183131}
   m_Layer: 0
   m_Name: "\u52C7\u8005"
   m_TagString: Untagged
@@ -113,32 +112,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7112831633894183131
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8811839197925077450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d32a38f4e601fca4b963be62d4e2d9df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  unitName: "\u52C7\u8005"
-  unitLevel: 20
-  atk: 100
-  def: 80
-  maxHp: 240
-  currentHp: 240
-  maxSkillPower: 5
-  currySkillPower: 5
-  maxExp: 00000000050000000a0000000f00000014000000190000001e00000023000000280000002d00000032000000370000003c00000041000000460000004b00000050000000550000005a0000005f00000064000000690000006e0000007300000078000000
-  curryExp: 80
-  exe: 0
-  ItemMax: 15
-  RedPoison: 5
-  BluePoison: 5
-  BuffPoison: 3
-  UndebuffPoison: 2
-  speed: 25

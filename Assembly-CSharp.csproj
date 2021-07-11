@@ -67,7 +67,12 @@
     <Compile Include="Assets\Script\BattleSystem.cs" />
     <Compile Include="Assets\Script\GameMenu.cs" />
     <Compile Include="Assets\Script\MapMove.cs" />
+    <Compile Include="Assets\Script\SaveLoadData.cs" />
     <Compile Include="Assets\Script\SoundManager.cs" />
+    <Compile Include="Assets\Script\StoryOpen.cs" />
+    <Compile Include="Assets\Script\TEST.cs" />
+    <Compile Include="Assets\Script\TalkOpen.cs" />
+    <Compile Include="Assets\Script\TalkOpenCetral.cs" />
     <Compile Include="Assets\Script\Unit.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

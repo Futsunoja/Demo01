@@ -54,13 +54,13 @@ MonoBehaviour:
   currySkillPower: 0
   maxExp: 
   curryExp: 0
-  exe: 50
+  exe: 250
   ItemMax: 0
   RedPoison: 0
   BluePoison: 0
   BuffPoison: 0
   UndebuffPoison: 0
-  speed: 20
+  speed: 50
 --- !u!1 &5899338023891782732
 GameObject:
   m_ObjectHideFlags: 0

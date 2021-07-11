@@ -17,10 +17,19 @@ public class MapMove : MonoBehaviour
     public GameObject maphaveeventAni;
     public GameObject CallLittleGirl;
     public GameObject DragonWhatToFight;
+    public Transform canvas;
 
-    float i = 4;
+    public GameObject Meet;
+    public GameObject FirstPlayer, FirstGirl;
+    public Transform PlayerTra, GirlTra;
+    public Transform PlayerTalkTra, GirlTalkTra;
+    public GameObject[] Dialogue;
+    public int dialogue;
+    public bool canInput;
+    public static bool runDialogue;
+
+    float i = 4;    //調整移動速度
     public int[] j;
-    int loaMap;
     bool l, m;
 
     public AudioSource audMap;
@@ -28,19 +37,22 @@ public class MapMove : MonoBehaviour
 
     bool girlani, step1, step2, step3;
 
+    [SerializeField]
+    PlayerData data;
+
     private void Start()
     {
+        data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("jsondata"));
         audMap.clip = MapBGM;
         audMap.Play();
 
         #region 讀取玩家存檔，建立初始畫面
-        loaMap = 0;                                                                    //讀取玩家檔案的地圖編號
-        transform.position = map[loaMap].transform.position;                           //初始畫面，玩家位置
-        place.GetComponent<Text>().text = map[loaMap].name;                            //初始畫面，地圖名稱
-        intro.GetComponent<Text>().text = tintro[loaMap].GetComponent<Text>().text;    //初始畫面，地圖介紹
-        pla[0].SetActive(true);                                                        //初始畫面，指標朝左
+        transform.position = map[data.mapNumber].transform.position;                           //初始畫面，玩家位置
+        place.GetComponent<Text>().text = map[data.mapNumber].name;                            //初始畫面，地圖名稱
+        intro.GetComponent<Text>().text = tintro[data.mapNumber].GetComponent<Text>().text;    //初始畫面，地圖介紹
+        pla[0].SetActive(true);                                                                //初始畫面，指標朝左
         pla[1].SetActive(false);
-        m = true;                                                                      //初始畫面，小女孩介面打開
+        m = true;                                                                              //初始畫面，小女孩介面打開
         go.GetComponent<Image>().color = Color.green;
         CallLittleGirl.SetActive(false);
         #endregion
@@ -62,80 +74,32 @@ public class MapMove : MonoBehaviour
             direction[dir].SetActive(false);
         #endregion
 
+        #region 初遇小女孩
+        Meet.SetActive(false);
+        FirstPlayer.transform.localPosition = new Vector3(470, 0, 0);
+        FirstGirl.transform.localPosition = new Vector3(-440, 0, 0);
+        canInput = false;
+        runDialogue = true;
+        dialogue = 0;
+        #endregion
+
         MapHaveEvent(14);    //地圖編號14 (巨龍山洞) 有事件
     }
 
     private void Update()
     {
-        List<int> jList = j.ToList();      //將J陣列轉化為Lisk
-        var k = jList.Where(x => x != 0);  //變數k = JLisk中符合條件的元素 (x => x 條件)
-        if (k.ToList().Count > 0)          //將符合條件的元素組成新的List，count (元素數量)
+        if (data.Story == 0)
         {
-            place.GetComponent<Text>().text = "";
-            intro.GetComponent<Text>().text = "";
-            for (int dir = 0; dir <= 3; dir++)
-                direction[dir].SetActive(false);
+            Meet.SetActive(true);
+            MeetLittleGirl();
         }
 
-        if (m == false && DragonWhatToFight.activeSelf == false)
+        if (data.Story != 0)
         {
-            if (k.ToList().Count == 0)
-            {
-                l = false;
-            }
-            if (Input.GetKeyDown(KeyCode.A) && l == false)
-            {
-                pla[0].SetActive(true);
-                pla[1].SetActive(false);
-                l = true;
-            }
-            if (Input.GetKeyDown(KeyCode.D) && l == false)
-            {
-                pla[0].SetActive(false);
-                pla[1].SetActive(true);
-                l = true;
-            }
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                audMap.PlayOneShot(OpenMenu);
-                CallLittleGirl.SetActive(false);
-                m = true;
-            }
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                if (k.ToList().Count == 0 && transform.position != map[14].transform.position)
-                {
-                    audMap.PlayOneShot(Hit);
-                    DragonWhatToFight.SetActive(true);
-                    Invoke("CloseDragonWhatToFight", 2f);
-                }
-                if (transform.position == map[14].transform.position)
-                {
-                    audMap.PlayOneShot(Hit);
-                    SceneManager.LoadScene("戰鬥畫面");
-                }
-            }
-            #region 座標操作
-            m0();
-            m1();
-            m2();
-            m3();
-            m4();
-            m5();
-            m6();
-            m7();
-            m8();
-            m9();
-            m10();
-            m11();
-            m12();
-            m13();
-            m14();
-            #endregion
-        }  //小女孩介面關掉時
-
-        mapMenu();
-        menuAni();
+            mapCtrl();
+            menuAni();
+            mapMenu();
+        }
     }
 
 
@@ -145,6 +109,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[0].transform.position)
         {
+            data.mapNumber = 0;
             Direction("A");
             place.GetComponent<Text>().text = map[0].name;
             intro.GetComponent<Text>().text = tintro[0].GetComponent<Text>().text;
@@ -168,6 +133,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[1].transform.position)
         {
+            data.mapNumber = 1;
             Direction("WASD");
             place.GetComponent<Text>().text = map[1].name;
             intro.GetComponent<Text>().text = tintro[1].GetComponent<Text>().text;
@@ -244,6 +210,7 @@ public class MapMove : MonoBehaviour
         float speed = i * Time.deltaTime;
         if (transform.position == map[2].transform.position)
         {
+            data.mapNumber = 2;
             Direction("W");
             place.GetComponent<Text>().text = map[2].name;
             intro.GetComponent<Text>().text = tintro[2].GetComponent<Text>().text;
@@ -267,6 +234,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[3].transform.position)
         {
+            data.mapNumber = 3;
             Direction("S");
             place.GetComponent<Text>().text = map[3].name;
             intro.GetComponent<Text>().text = tintro[3].GetComponent<Text>().text;
@@ -306,6 +274,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[4].transform.position)
         {
+            data.mapNumber = 4;
             Direction("WAD");
             place.GetComponent<Text>().text = map[4].name;
             intro.GetComponent<Text>().text = tintro[4].GetComponent<Text>().text;
@@ -353,6 +322,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[5].transform.position)
         {
+            data.mapNumber = 5;
             Direction("WS");
             place.GetComponent<Text>().text = map[5].name;
             intro.GetComponent<Text>().text = tintro[5].GetComponent<Text>().text;
@@ -388,6 +358,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[6].transform.position)
         {
+            data.mapNumber = 6;
             Direction("S");
             place.GetComponent<Text>().text = map[6].name;
             intro.GetComponent<Text>().text = tintro[6].GetComponent<Text>().text;
@@ -411,6 +382,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[7].transform.position)
         {
+            data.mapNumber = 7;
             Direction("ASD");
             place.GetComponent<Text>().text = map[7].name;
             intro.GetComponent<Text>().text = tintro[7].GetComponent<Text>().text;
@@ -458,6 +430,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[8].transform.position)
         {
+            data.mapNumber = 8;
             Direction("AD");
             place.GetComponent<Text>().text = map[8].name;
             intro.GetComponent<Text>().text = tintro[8].GetComponent<Text>().text;
@@ -493,6 +466,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[9].transform.position)
         {
+            data.mapNumber = 9;
             Direction("D");
             place.GetComponent<Text>().text = map[9].name;
             intro.GetComponent<Text>().text = tintro[9].GetComponent<Text>().text;
@@ -516,6 +490,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[10].transform.position)
         {
+            data.mapNumber = 10;
             Direction("WAD");
             place.GetComponent<Text>().text = map[10].name;
             intro.GetComponent<Text>().text = tintro[10].GetComponent<Text>().text;
@@ -563,6 +538,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[11].transform.position)
         {
+            data.mapNumber = 11;
             Direction("AD");
             place.GetComponent<Text>().text = map[11].name;
             intro.GetComponent<Text>().text = tintro[11].GetComponent<Text>().text;
@@ -606,6 +582,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[12].transform.position)
         {
+            data.mapNumber = 12;
             Direction("A");
             place.GetComponent<Text>().text = map[12].name;
             intro.GetComponent<Text>().text = tintro[12].GetComponent<Text>().text;
@@ -637,6 +614,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[13].transform.position)
         {
+            data.mapNumber = 13;
             Direction("AD");
             place.GetComponent<Text>().text = map[13].name;
             intro.GetComponent<Text>().text = tintro[13].GetComponent<Text>().text;
@@ -672,6 +650,7 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[14].transform.position)
         {
+            data.mapNumber = 14;
             Direction("D");
             place.GetComponent<Text>().text = map[14].name;
             intro.GetComponent<Text>().text = tintro[14].GetComponent<Text>().text;
@@ -690,6 +669,76 @@ public class MapMove : MonoBehaviour
         }
     }
     #endregion
+
+    private void mapCtrl()
+    {
+        List<int> jList = j.ToList();      //將J陣列轉化為Lisk
+        var k = jList.Where(x => x != 0);  //變數k = JLisk中符合條件的元素 (x => x 條件)
+        if (k.ToList().Count > 0)          //將符合條件的元素組成新的List，count (元素數量)
+        {
+            place.GetComponent<Text>().text = "";
+            intro.GetComponent<Text>().text = "";
+            for (int dir = 0; dir <= 3; dir++)
+                direction[dir].SetActive(false);
+        }
+        if (m == false && DragonWhatToFight.activeSelf == false)
+        {
+            if (k.ToList().Count == 0)
+            {
+                l = false;
+            }
+            if (Input.GetKeyDown(KeyCode.A) && l == false)
+            {
+                pla[0].SetActive(true);
+                pla[1].SetActive(false);
+                l = true;
+            }
+            if (Input.GetKeyDown(KeyCode.D) && l == false)
+            {
+                pla[0].SetActive(false);
+                pla[1].SetActive(true);
+                l = true;
+            }
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                audMap.PlayOneShot(OpenMenu);
+                CallLittleGirl.SetActive(false);
+                m = true;
+            }
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));
+                if (k.ToList().Count == 0 && transform.position != map[14].transform.position)
+                {
+                    audMap.PlayOneShot(Hit);
+                    DragonWhatToFight.SetActive(true);
+                    Invoke("CloseDragonWhatToFight", 2f);
+                }
+                if (transform.position == map[14].transform.position)
+                {
+                    audMap.PlayOneShot(Hit);
+                    SceneManager.LoadScene("戰鬥畫面");
+                }
+            }
+            #region 座標操作
+            m0();
+            m1();
+            m2();
+            m3();
+            m4();
+            m5();
+            m6();
+            m7();
+            m8();
+            m9();
+            m10();
+            m11();
+            m12();
+            m13();
+            m14();
+            #endregion
+        }
+    }    //小女孩介面關掉時
 
     private void mapMenu()
     {
@@ -833,7 +882,7 @@ public class MapMove : MonoBehaviour
         {
             MapMenu.SetActive(true);
 
-            Girl.transform.position = Vector3.MoveTowards(Girl.transform.position, new Vector3(110, 371, 0), 360 * Time.deltaTime);
+            Girl.transform.position = Vector3.MoveTowards(Girl.transform.position, new Vector3(110, 371, 0), 480 * Time.deltaTime);
             if(Girl.transform.position == new Vector3(110, 371, 0))
             {
                 step1 = false;
@@ -966,5 +1015,161 @@ public class MapMove : MonoBehaviour
     private void CloseDragonWhatToFight()
     {
         DragonWhatToFight.SetActive(false);
+    }
+
+    private void MeetLittleGirl()
+    {
+        if (Input.GetKeyDown(KeyCode.J) && canInput == true && runDialogue == false)
+        {
+            canInput = false;
+            runDialogue = true;
+            dialogue++;
+        }
+
+        if (dialogue == 0 && canInput == false && runDialogue == true)
+        {
+            FirstPlayer.transform.localPosition = Vector3.MoveTowards(FirstPlayer.transform.localPosition, Vector3.zero, 480 * Time.deltaTime);
+            if (FirstPlayer.transform.localPosition == Vector3.zero)
+            {
+                canInput = true;
+                GameObject Talk = Instantiate(Dialogue[0], PlayerTalkTra);
+            }
+        }
+
+        if (dialogue == 1 && canInput == false && runDialogue == true)
+        {
+            FirstGirl.transform.localPosition = Vector3.MoveTowards(FirstGirl.transform.localPosition, Vector3.zero, 480 * Time.deltaTime);
+            if (FirstGirl.transform.localPosition == Vector3.zero)
+            {
+                canInput = true;
+                GameObject Talk = Instantiate(Dialogue[1], GirlTalkTra);
+            }
+        }
+
+        if (dialogue == 2 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[2], PlayerTalkTra);
+        }
+
+        if (dialogue == 3 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[3], GirlTalkTra);
+        }
+
+        if (dialogue == 4 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[4], GirlTalkTra);
+        }
+
+        if (dialogue == 5 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[5], PlayerTalkTra);
+        }
+
+        if (dialogue == 6 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[6], GirlTalkTra);
+        }
+
+        if (dialogue == 7 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[7], GirlTalkTra);
+        }
+
+        if (dialogue == 8 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[8], PlayerTalkTra);
+        }
+
+        if (dialogue == 9 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[9], GirlTalkTra);
+        }
+
+        if (dialogue == 10 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[10], GirlTalkTra);
+        }
+
+        if (dialogue == 11 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[11], GirlTalkTra);
+        }
+
+        if (dialogue == 12 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[12], GirlTalkTra);
+        }
+
+        if (dialogue == 13 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[13], GirlTalkTra);
+        }
+
+        if (dialogue == 14 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[14], PlayerTalkTra);
+        }
+
+        if (dialogue == 15 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[15], GirlTalkTra);
+        }
+
+        if (dialogue == 16 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[16], GirlTalkTra);
+        }
+
+        if (dialogue == 17 && canInput == false && runDialogue == true)
+        {
+            canInput = true;
+            GameObject Talk = Instantiate(Dialogue[17], PlayerTalkTra);
+        }
+
+        if (dialogue == 18 && canInput == false && runDialogue == true)
+        {
+            Meet.SetActive(false);
+            data.Story = 1;
+            PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));
+        }
+    }    //初遇小女孩
+
+    [System.Serializable]
+    public class PlayerData
+    {
+        public string unitName;
+        public int unitLevel;
+        public int atk;
+        public int def;
+        public float maxHp;
+        public float currentHp;
+        public int maxSkillPower;
+        public int currySkillPower;
+        public int[] maxExp;
+        public int curryExp;
+        public int ItemMax;
+        public int RedPoison;
+        public int BluePoison;
+        public int BuffPoison;
+        public int UndebuffPoison;
+        public int speed;
+        public int mapNumber;
+        public int Story;
     }
 }
