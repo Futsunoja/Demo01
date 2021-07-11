@@ -42,8 +42,9 @@ public class MapMove : MonoBehaviour
 
     private void Start()
     {
-        data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("jsondata"));
-        audMap.clip = MapBGM;
+        data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("jsondata"));    //讀取存檔資訊
+
+        audMap.clip = MapBGM;    //設定BGM
         audMap.Play();
 
         #region 讀取玩家存檔，建立初始畫面
@@ -53,12 +54,12 @@ public class MapMove : MonoBehaviour
         pla[0].SetActive(true);                                                                //初始畫面，指標朝左
         pla[1].SetActive(false);
         m = true;                                                                              //初始畫面，小女孩介面打開
-        go.GetComponent<Image>().color = Color.green;
-        CallLittleGirl.SetActive(false);
+        go.GetComponent<Image>().color = Color.green;                                          //初始預設選擇前進
+        CallLittleGirl.SetActive(false);                                                       //呼叫小女孩介面關閉
         #endregion
 
         #region 小女孩介面初始化
-        girlani = true;
+        girlani = true;    
         step1 = true;
         Girl.transform.position = new Vector3(-130, 371, 0);
         talk.transform.localScale = Vector3.zero;
@@ -670,7 +671,7 @@ public class MapMove : MonoBehaviour
     }
     #endregion
 
-    private void mapCtrl()
+    private void mapCtrl()    //小女孩介面關掉時
     {
         List<int> jList = j.ToList();      //將J陣列轉化為Lisk
         var k = jList.Where(x => x != 0);  //變數k = JLisk中符合條件的元素 (x => x 條件)
@@ -699,15 +700,16 @@ public class MapMove : MonoBehaviour
                 pla[1].SetActive(true);
                 l = true;
             }
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q))    //打開小女孩介面
             {
                 audMap.PlayOneShot(OpenMenu);
-                CallLittleGirl.SetActive(false);
+                CallLittleGirl.SetActive(false);    //呼叫小女孩介面關閉
                 m = true;
             }
             if (Input.GetKeyDown(KeyCode.J))
             {
-                PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));
+                PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));    //存取進入場景前的資料
+
                 if (k.ToList().Count == 0 && transform.position != map[14].transform.position)
                 {
                     audMap.PlayOneShot(Hit);
@@ -738,9 +740,9 @@ public class MapMove : MonoBehaviour
             m14();
             #endregion
         }
-    }    //小女孩介面關掉時
+    }
 
-    private void mapMenu()
+    private void mapMenu()    //小女孩介面操作
     {
         if (m == true && girlani == false)
         {
@@ -874,9 +876,9 @@ public class MapMove : MonoBehaviour
             CallLittleGirl.SetActive(true);
             MapMenu.SetActive(false);
         }
-    }    //小女孩介面操作
+    }
 
-    private void menuAni()
+    private void menuAni()    //小女孩介面簡易動畫
     {
         if (m == true && girlani == true && step1 == true)    //小女孩進入
         {
@@ -932,9 +934,9 @@ public class MapMove : MonoBehaviour
                 }
             }
         }
-    }    //小女孩介面簡易動畫
+    }
 
-    private void Direction(string WASD)
+    private void Direction(string WASD)    //方向指標顯示隱藏
     {
         for (int dir = 0; dir <= 3; dir++)
             direction[dir].SetActive(false);
@@ -1005,19 +1007,19 @@ public class MapMove : MonoBehaviour
             for(int dir2 = 0; dir2 <= 3; dir2++)
                 direction[dir2].SetActive(true);
         }
-    }    //方向指標顯示隱藏
+    }
 
-    private void MapHaveEvent(int i)
+    private void MapHaveEvent(int i)    //在編號i的地圖有事件
     {
         GameObject mapHaveEvent = Instantiate(maphaveeventAni, map[i].transform);
-    }    //在編號i的地圖有事件
+    }
 
     private void CloseDragonWhatToFight()
     {
         DragonWhatToFight.SetActive(false);
     }
 
-    private void MeetLittleGirl()
+    private void MeetLittleGirl()    //初遇小女孩
     {
         if (Input.GetKeyDown(KeyCode.J) && canInput == true && runDialogue == false)
         {
@@ -1148,7 +1150,7 @@ public class MapMove : MonoBehaviour
             data.Story = 1;
             PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));
         }
-    }    //初遇小女孩
+    }
 
     [System.Serializable]
     public class PlayerData

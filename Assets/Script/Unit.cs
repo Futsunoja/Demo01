@@ -10,14 +10,7 @@ public class Unit : MonoBehaviour
     public float currentHp;
     public int maxSkillPower;
     public int currySkillPower;
-    public int[] maxExp;
-    public int curryExp;
     public int exe;
-    public int ItemMax;
-    public int RedPoison;
-    public int BluePoison;
-    public int BuffPoison;
-    public int UndebuffPoison;
     public int speed;
 
     public bool TakeDamage(int dmg)

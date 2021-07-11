@@ -24,7 +24,8 @@ public class StoryOpen : MonoBehaviour
     private void Start()
     {
         #region 能力初始化
-        PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();   //刪除舊有資料
+
         data.unitName = "勇者";
         data.unitLevel = 20;
         data.atk = 100;
@@ -43,7 +44,8 @@ public class StoryOpen : MonoBehaviour
         data.speed = 42;
         data.mapNumber = 0;
         data.Story = 0;
-        PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));
+
+        PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));    //存取新資料
         #endregion
 
         canInput = false;

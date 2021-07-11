@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class SaveLoadData : MonoBehaviour
+public class SaveLoadDataTest : MonoBehaviour
 {
     
 

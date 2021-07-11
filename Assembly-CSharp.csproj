@@ -67,7 +67,7 @@
     <Compile Include="Assets\Script\BattleSystem.cs" />
     <Compile Include="Assets\Script\GameMenu.cs" />
     <Compile Include="Assets\Script\MapMove.cs" />
-    <Compile Include="Assets\Script\SaveLoadData.cs" />
+    <Compile Include="Assets\Script\SaveLoadDataTest.cs" />
     <Compile Include="Assets\Script\SoundManager.cs" />
     <Compile Include="Assets\Script\StoryOpen.cs" />
     <Compile Include="Assets\Script\TEST.cs" />

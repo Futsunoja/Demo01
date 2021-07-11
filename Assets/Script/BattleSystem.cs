@@ -1015,7 +1015,7 @@ public class BattleSystem : MonoBehaviour
     IEnumerator EndTrun()    //此回合結束
     {
         UPCOUNT();
-        if (POISONcount > 0 && POISONworked == false)
+        if (POISONcount > 0 && POISONworked == false)    //有中毒時，計算中毒傷害
         {
             StartCoroutine(POISONCOUNT());
         }
@@ -1034,8 +1034,8 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         BattleSettlement.SetActive(true);
 
-        data.atk = PlayerOriAtk;
-        data.def = PlayerOriDef;
+        data.atk = PlayerOriAtk;    //攻擊力回歸初始值
+        data.def = PlayerOriDef;    //防禦力回歸初始值
 
         if (state == BattleState.WON)    //勝利
         {
@@ -1147,7 +1147,6 @@ public class BattleSystem : MonoBehaviour
         
         if (state == BattleState.LOST)    //戰敗
         {
-            data.currentHp = data.maxHp;
             audBattle.clip = LoseBGM;
             audBattle.Play();
             LoseSettlement.SetActive(true);
@@ -1155,7 +1154,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    public void WonClickToRestart()
+    public void WonClickToRestart()    //勝利後點擊重啟戰鬥
     {
         if (Wonclicktorestart == true)
         {
@@ -1165,7 +1164,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
     }
-    public void LoseChoose()
+    public void LoseChoose()    //死亡後選項操作
     {
         if (Losechoose == true)
         {
@@ -1225,15 +1224,15 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    public void DelayRestartGame()
+    public void DelayRestartGame()    //回戰鬥畫面
     {
         SceneManager.LoadScene("戰鬥畫面");
     }
-    public void DelayReturnMap()
+    public void DelayReturnMap()    //回大地圖
     {
         SceneManager.LoadScene("大地圖");
     }
-    public void DelayReturnMenu()
+    public void DelayReturnMenu()    //回主畫面
     {
         SceneManager.LoadScene("主畫面");
     }
@@ -1464,7 +1463,6 @@ public class BattleSystem : MonoBehaviour
         public int currySkillPower;
         public int[] maxExp;
         public int curryExp;
-        public int exe;
         public int ItemMax;
         public int RedPoison;
         public int BluePoison;
