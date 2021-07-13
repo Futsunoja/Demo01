@@ -320,7 +320,7 @@ ScriptsOnlyBuild:
     className: PlayerQuitHandler
   - hash:
       serializedVersion: 2
-      Hash: 843e0cf53e03e7202b40a50bbcdc242d
+      Hash: 42c7806206c6d1744f3a7919dfb2eda6
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MapMove
@@ -452,7 +452,7 @@ ScriptsOnlyBuild:
     className: Shadow
   - hash:
       serializedVersion: 2
-      Hash: 308ee0cea43441de07c81f6e61cfc7ae
+      Hash: 3b31e1fdfd51404152637838e4930cb1
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameMenu

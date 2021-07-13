@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.IO;
 
 public class MapMove : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class MapMove : MonoBehaviour
     public GameObject[] tintro;
     public GameObject place, intro;
     public GameObject MapMenu, Girl, talk, go, tra, forg, sav, loa, backmenu;
+    public GameObject Save1, Save2, Load1, Load2, Load3;
+    public bool SaveRun, LoadRun;
     public GameObject[] cannotuse;
     public GameObject[] direction;
     public GameObject maphaveeventAni;
@@ -70,7 +73,12 @@ public class MapMove : MonoBehaviour
         sav.transform.localScale = Vector3.zero;
         loa.transform.localScale = Vector3.zero;
         backmenu.transform.localScale = Vector3.zero;
-        for(int can = 0; can <= 3; can++)
+        Save1.SetActive(false);
+        Save2.SetActive(false);
+        Load1.SetActive(false);
+        Load2.SetActive(false);
+        Load3.SetActive(false);
+        for (int can = 0; can <= 3; can++)
             cannotuse[can].GetComponent<Image>().fillAmount = 0;
         for(int dir=0; dir <= 3; dir++)
             direction[dir].SetActive(false);
@@ -702,7 +710,7 @@ public class MapMove : MonoBehaviour
                 pla[1].SetActive(true);
                 l = true;
             }
-            if (Input.GetKeyDown(KeyCode.Q))    //打開小女孩介面
+            if (Input.GetKeyDown(KeyCode.Q) && l == false)    //打開小女孩介面
             {
                 audMap.PlayOneShot(OpenMenu);
                 CallLittleGirl.SetActive(false);    //呼叫小女孩介面關閉
@@ -712,7 +720,7 @@ public class MapMove : MonoBehaviour
             {
                 PlayerPrefs.SetString("Playerdata", JsonUtility.ToJson(data));    //存取進入場景前的資料
 
-                if (k.ToList().Count == 0 && transform.position != map[14].transform.position)
+                if (l == false && transform.position != map[14].transform.position)
                 {
                     audMap.PlayOneShot(Hit);
                     DragonWhatToFight.SetActive(true);
@@ -746,7 +754,7 @@ public class MapMove : MonoBehaviour
 
     private void mapMenu()    //小女孩介面操作
     {
-        if (m == true && girlani == false)
+        if (m == true && girlani == false && SaveRun==false)
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
@@ -853,6 +861,18 @@ public class MapMove : MonoBehaviour
                 {
                     audMap.PlayOneShot(Hit);
                     m = false;
+                }
+                if (sav.GetComponent<Image>().color == Color.green)
+                {
+                    audMap.PlayOneShot(Hit);
+                    SaveRun = true;
+                    StartCoroutine(SaveAni());
+                }
+                if (loa.GetComponent<Image>().color == Color.green)
+                {
+                    audMap.PlayOneShot(Hit);
+                    LoadRun = true;
+                    StartCoroutine(LoadAni());
                 }
                 if (backmenu.GetComponent<Image>().color == Color.green)
                 {
@@ -1019,6 +1039,47 @@ public class MapMove : MonoBehaviour
     private void CloseDragonWhatToFight()
     {
         DragonWhatToFight.SetActive(false);
+    }
+
+    IEnumerator SaveAni()
+    {
+        talk.SetActive(false);
+        Save1.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        PlayerPrefs.SetString("SaveData", JsonUtility.ToJson(data));
+        Save1.SetActive(false);
+        Save2.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        Save2.SetActive(false);
+        talk.SetActive(true);
+        SaveRun = false;
+    }
+
+    IEnumerator LoadAni()
+    {
+        if (PlayerPrefs.HasKey("SaveData") == true)
+        {
+            talk.SetActive(false);
+            Load1.SetActive(true);
+            yield return new WaitForSeconds(1.5f);
+            data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("SaveData"));
+            transform.position = map[data.mapNumber].transform.position;
+            Load1.SetActive(false);
+            Load2.SetActive(true);
+            yield return new WaitForSeconds(1.5f);
+            Load2.SetActive(false);
+            talk.SetActive(true);
+            LoadRun = false;
+        }
+        else
+        {
+            talk.SetActive(false);
+            Load3.SetActive(true);
+            yield return new WaitForSeconds(1.5f);
+            Load3.SetActive(false);
+            talk.SetActive(true);
+            LoadRun = false;
+        }
     }
 
     private void MeetLittleGirl()    //初遇小女孩

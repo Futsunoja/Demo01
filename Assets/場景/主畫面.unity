@@ -798,6 +798,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a6f8b48924f454aa40f6d143407eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data:
+    unitName: 
+    unitLevel: 0
+    atk: 0
+    def: 0
+    maxHp: 0
+    currentHp: 0
+    maxSkillPower: 0
+    currySkillPower: 0
+    maxExp: 
+    curryExp: 0
+    ItemMax: 0
+    RedPoison: 0
+    BluePoison: 0
+    BuffPoison: 0
+    UndebuffPoison: 0
+    speed: 0
+    mapNumber: 0
+    Story: 0
+    ThievesDenOpen: 0
+    OnTheMountainOpen: 0
+    GoddessStatueOpen: 0
   pig: {fileID: 2018032950}
   aud: {fileID: 1708540600}
   MenuBGM: {fileID: 8300000, guid: 450c41d1436bf964fa7a4b169ea74719, type: 3}
@@ -1227,7 +1249,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2129974941
 RectTransform:
   m_ObjectHideFlags: 0
