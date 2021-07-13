@@ -81,8 +81,6 @@ public class StoryOpen : MonoBehaviour
 
         if (dialogue == 0 && canInput == false && runDialogue == true)
         {
-            aud.clip = BGM;
-            aud.Play();
             King.transform.localPosition = Vector3.MoveTowards(King.transform.localPosition, Vector3.zero, 600 * Time.deltaTime);
             if (King.transform.localPosition == Vector3.zero)
             {
@@ -516,8 +514,12 @@ public class StoryOpen : MonoBehaviour
                 break;
             }
         }
-        yield return new WaitForSeconds(1f);
 
+        yield return new WaitForSeconds(0.5f);
+        aud.clip = BGM;
+        aud.Play();
+
+        yield return new WaitForSeconds(0.5f);
         dialogue++;
     }
 

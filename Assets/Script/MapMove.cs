@@ -694,9 +694,14 @@ public class MapMove : MonoBehaviour
         }
         if (m == false && DragonWhatToFight.activeSelf == false)
         {
+            print("" + k.ToList().Count +l);
             if (k.ToList().Count == 0)
             {
                 l = false;
+            }
+            else
+            {
+                l = true;
             }
             if (Input.GetKeyDown(KeyCode.A) && l == false)
             {
@@ -1064,6 +1069,8 @@ public class MapMove : MonoBehaviour
             yield return new WaitForSeconds(1.5f);
             data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("SaveData"));
             transform.position = map[data.mapNumber].transform.position;
+            place.GetComponent<Text>().text = map[data.mapNumber].name;
+            intro.GetComponent<Text>().text = tintro[data.mapNumber].GetComponent<Text>().text;
             Load1.SetActive(false);
             Load2.SetActive(true);
             yield return new WaitForSeconds(1.5f);
