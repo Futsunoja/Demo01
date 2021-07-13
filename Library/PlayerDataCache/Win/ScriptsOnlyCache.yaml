@@ -4,7 +4,7 @@ ScriptsOnlyBuild:
     - BattleSystem
     - GameMenu
     - MapMove
-    - SaveLoadData
+    - SaveLoadDataTest
     - SoundManager
     - StoryOpen
     - TalkOpen
@@ -98,6 +98,10 @@ ScriptsOnlyBuild:
     - Class: 48
       Script: {instanceID: 0}
     - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
@@ -316,7 +320,7 @@ ScriptsOnlyBuild:
     className: PlayerQuitHandler
   - hash:
       serializedVersion: 2
-      Hash: fc709fe0b245c959aba8ed3d963ac9b5
+      Hash: 843e0cf53e03e7202b40a50bbcdc242d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MapMove
@@ -412,7 +416,7 @@ ScriptsOnlyBuild:
     className: RectMask2D
   - hash:
       serializedVersion: 2
-      Hash: a8f93292901a41f40e0c99ffa53834cd
+      Hash: 30de9e78ed452098157fe67fd67e8a93
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BattleSystem
@@ -472,7 +476,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: ee01c73351c1bb30c862b75304a7961f
+      Hash: 419089a6c74bc2144e6cb5afd5c55907
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Unit
@@ -496,7 +500,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: e98d8d8f492167eeb86f60d4d32ed608
+      Hash: fb01f52dd99ea1f967ca4d80050ac4f5
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: StoryOpen
@@ -559,7 +563,7 @@ ScriptsOnlyBuild:
       Hash: 8173abd8640bf3cd88059156affe189b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: SaveLoadData
+    className: SaveLoadDataTest
   - hash:
       serializedVersion: 2
       Hash: 5ad4aa237d47ac2bab17bacb672edf7a

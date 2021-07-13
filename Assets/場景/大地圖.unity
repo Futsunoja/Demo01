@@ -5294,6 +5294,7 @@ MonoBehaviour:
   - {fileID: 1379136734}
   - {fileID: 827684601}
   - {fileID: 1491541924}
+  IntroField: {fileID: 1478756764}
   pla:
   - {fileID: 878644741}
   - {fileID: 748715075}
@@ -5391,6 +5392,9 @@ MonoBehaviour:
     speed: 0
     mapNumber: 0
     Story: 0
+    ThievesDenOpen: 0
+    OnTheMountainOpen: 0
+    GoddessStatueOpen: 0
 --- !u!212 &2103975638
 SpriteRenderer:
   m_ObjectHideFlags: 0

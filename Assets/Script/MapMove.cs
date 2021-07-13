@@ -8,6 +8,7 @@ using System.Collections;
 public class MapMove : MonoBehaviour
 {
     public GameObject[] map;
+    public GameObject IntroField;
     public GameObject[] pla;
     public GameObject[] tintro;
     public GameObject place, intro;
@@ -42,7 +43,7 @@ public class MapMove : MonoBehaviour
 
     private void Start()
     {
-        data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("jsondata"));    //讀取存檔資訊
+        data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("Playerdata"));    //讀取存檔資訊
 
         audMap.clip = MapBGM;    //設定BGM
         audMap.Play();
@@ -91,6 +92,7 @@ public class MapMove : MonoBehaviour
     {
         if (data.Story == 0)
         {
+            IntroField.SetActive(false);
             Meet.SetActive(true);
             MeetLittleGirl();
         }
@@ -708,7 +710,7 @@ public class MapMove : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.J))
             {
-                PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));    //存取進入場景前的資料
+                PlayerPrefs.SetString("Playerdata", JsonUtility.ToJson(data));    //存取進入場景前的資料
 
                 if (k.ToList().Count == 0 && transform.position != map[14].transform.position)
                 {
@@ -1023,6 +1025,7 @@ public class MapMove : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J) && canInput == true && runDialogue == false)
         {
+            audMap.PlayOneShot(Hit);
             canInput = false;
             runDialogue = true;
             dialogue++;
@@ -1147,8 +1150,9 @@ public class MapMove : MonoBehaviour
         if (dialogue == 18 && canInput == false && runDialogue == true)
         {
             Meet.SetActive(false);
+            IntroField.SetActive(true);
             data.Story = 1;
-            PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));
+            PlayerPrefs.SetString("Playerdata", JsonUtility.ToJson(data));
         }
     }
 
@@ -1173,5 +1177,8 @@ public class MapMove : MonoBehaviour
         public int speed;
         public int mapNumber;
         public int Story;
+        public bool ThievesDenOpen;
+        public bool OnTheMountainOpen;
+        public bool GoddessStatueOpen;
     }
 }

@@ -18,6 +18,9 @@ public class StoryOpen : MonoBehaviour
     public static bool runDialogue;
     int dialogue;
 
+    public AudioSource aud;
+    public AudioClip BGM, Hit, Skip;
+
     [SerializeField]
     PlayerData data;
 
@@ -44,8 +47,11 @@ public class StoryOpen : MonoBehaviour
         data.speed = 42;
         data.mapNumber = 0;
         data.Story = 0;
+        data.ThievesDenOpen = false;
+        data.OnTheMountainOpen = false;
+        data.GoddessStatueOpen = false;
 
-        PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));    //存取新資料
+        PlayerPrefs.SetString("Playerdata", JsonUtility.ToJson(data));    //存取新資料
         #endregion
 
         canInput = false;
@@ -66,7 +72,8 @@ public class StoryOpen : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.J) && canInput == true && runDialogue==false)
-        { 
+        {
+            aud.PlayOneShot(Hit);
             canInput = false;
             runDialogue = true;
             dialogue++;
@@ -74,6 +81,8 @@ public class StoryOpen : MonoBehaviour
 
         if (dialogue == 0 && canInput == false && runDialogue == true)
         {
+            aud.clip = BGM;
+            aud.Play();
             King.transform.localPosition = Vector3.MoveTowards(King.transform.localPosition, Vector3.zero, 600 * Time.deltaTime);
             if (King.transform.localPosition == Vector3.zero)
             {
@@ -473,6 +482,12 @@ public class StoryOpen : MonoBehaviour
                 StartCoroutine(Close());
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Q))    //跳過開頭劇情
+        {
+            aud.PlayOneShot(Skip);
+            Invoke("DelayStartMap", 1f);
+        }
     }
 
     IEnumerator Open()
@@ -553,5 +568,8 @@ public class StoryOpen : MonoBehaviour
         public int speed;
         public int mapNumber;
         public int Story;
+        public bool ThievesDenOpen;
+        public bool OnTheMountainOpen;
+        public bool GoddessStatueOpen;
     }
 }

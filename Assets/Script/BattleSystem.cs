@@ -55,7 +55,7 @@ public class BattleSystem : MonoBehaviour
 
     private void Start()
     {
-        data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("jsondata"));
+        data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("Playerdata"));
         data.currySkillPower = 5;
 
         audBattle.clip = BattleBGM;
@@ -88,7 +88,6 @@ public class BattleSystem : MonoBehaviour
 
     private void Update()
     {
-        print("" + JsonUtility.ToJson(data));
         ChooseAction();
         WonClickToRestart();
         LoseChoose();
@@ -770,7 +769,6 @@ public class BattleSystem : MonoBehaviour
             {
                 state = BattleState.PLAYERTURN;
                 StartCoroutine(AttackSkill(playerSKILLNAME));
-                print("" + playerSKILLNAME);
             }
         }
     }
@@ -1094,7 +1092,7 @@ public class BattleSystem : MonoBehaviour
                 }
             }
 
-            PlayerPrefs.SetString("jsondata", JsonUtility.ToJson(data));
+            PlayerPrefs.SetString("Playerdata", JsonUtility.ToJson(data));
             yield return new WaitForSeconds(1f);
 
             AbilitySettlement.SetActive(true);
@@ -1164,13 +1162,12 @@ public class BattleSystem : MonoBehaviour
             }
         }
     }
-    public void LoseChoose()    //死亡後選項操作
+    public void LoseChoose()           //死亡後選項操作
     {
         if (Losechoose == true)
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                print("S");
                 if (ReStartBattle.GetComponent<Image>().color == Color.gray)
                 {
                     ReStartBattle.GetComponent<Image>().color = Color.white;
@@ -1189,7 +1186,6 @@ public class BattleSystem : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.W))
             {
-                print("W");
                 if (ReStartBattle.GetComponent<Image>().color == Color.gray)
                 {
                     ReStartBattle.GetComponent<Image>().color = Color.white;
@@ -1228,11 +1224,11 @@ public class BattleSystem : MonoBehaviour
     {
         SceneManager.LoadScene("戰鬥畫面");
     }
-    public void DelayReturnMap()    //回大地圖
+    public void DelayReturnMap()      //回大地圖
     {
         SceneManager.LoadScene("大地圖");
     }
-    public void DelayReturnMenu()    //回主畫面
+    public void DelayReturnMenu()     //回主畫面
     {
         SceneManager.LoadScene("主畫面");
     }
@@ -1471,5 +1467,8 @@ public class BattleSystem : MonoBehaviour
         public int speed;
         public int mapNumber;
         public int Story;
+        public bool ThievesDenOpen;
+        public bool OnTheMountainOpen;
+        public bool GoddessStatueOpen;
     }
 }
