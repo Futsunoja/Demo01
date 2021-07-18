@@ -476,7 +476,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 419089a6c74bc2144e6cb5afd5c55907
+      Hash: 4399ba1d0bd91f57a5028d4e8d4eb423
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Unit

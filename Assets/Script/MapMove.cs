@@ -725,13 +725,13 @@ public class MapMove : MonoBehaviour
             {
                 PlayerPrefs.SetString("Playerdata", JsonUtility.ToJson(data));    //存取進入場景前的資料
 
-                if (l == false && transform.position != map[14].transform.position)
+                if (l == false && data.mapNumber != 14 && data.mapNumber != 6)
                 {
                     audMap.PlayOneShot(Hit);
                     DragonWhatToFight.SetActive(true);
                     Invoke("CloseDragonWhatToFight", 2f);
                 }
-                if (transform.position == map[14].transform.position)
+                if (data.mapNumber == 14 || data.mapNumber == 6)
                 {
                     audMap.PlayOneShot(Hit);
                     SceneManager.LoadScene("戰鬥畫面");

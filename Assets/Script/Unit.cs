@@ -12,6 +12,9 @@ public class Unit : MonoBehaviour
     public int currySkillPower;
     public int exe;
     public int speed;
+    public Sprite nico;
+    public Sprite kimo;
+    public GameObject Self;
 
     public bool TakeDamage(int dmg)
     {

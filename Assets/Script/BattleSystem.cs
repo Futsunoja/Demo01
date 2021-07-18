@@ -55,7 +55,7 @@ public class BattleSystem : MonoBehaviour
 
     public Battletest state;
 
-    private void Start()
+    void Start()
     {
         data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("Playerdata"));
         data.currySkillPower = data.maxSkillPower;
@@ -69,7 +69,7 @@ public class BattleSystem : MonoBehaviour
         c3.transform.localPosition = c;
         c4.transform.localPosition = c;
 
-        GameObject playerGo = Instantiate(playerPrefab, playerBattleStation);
+        Instantiate(playerPrefab, playerBattleStation);
 
         MeetEnemy();
         GameObject enemyGo = Instantiate(enemyPrefab[EnemyNumber], enemyBattleStation);
@@ -89,7 +89,7 @@ public class BattleSystem : MonoBehaviour
         SetupBattle();
     }
 
-    private void Update()
+    void Update()
     {
         ChooseAction();
         WonClickToRestart();
@@ -784,10 +784,13 @@ public class BattleSystem : MonoBehaviour
 
     void MeetEnemy()    //在 N 地點遇見 M 敵人
     {
+        if (data.mapNumber == 6)
+        {
+            EnemyNumber = 1;
+        }
         if (data.mapNumber == 14)
         {
-            int i = Random.Range(0, 2);
-            EnemyNumber = i;
+            EnemyNumber = 0;
         }
     }
 
@@ -1048,25 +1051,66 @@ public class BattleSystem : MonoBehaviour
         BattleMessage.SetActive(true);
         BattleMessage.GetComponent<Text>().text = data.unitName + "逃跑了";
         yield return new WaitForSeconds(1.5f);
-        ReSet();
         DelayReturnMap();
     }
 
     IEnumerator EndTrun()    //此回合結束
     {
-        UPCOUNT();
-        if (POISONcount > 0 && POISONworked == false)    //有中毒時，計算中毒傷害
+        #region 強化倒數
+        if (UPcount > 0)
         {
-            StartCoroutine(POISONCOUNT());
+            UPcount--;
         }
-        if (POISONworked == true)
+        else if (UPcount == 0)
+        {
+            data.atk = PlayerOriAtk;
+            data.def = PlayerOriDef;
+        }
+        #endregion
+        #region 中毒傷害與倒數
+        if (POISONcount > 0)
         {
             yield return new WaitForSeconds(1f);
-            ReSet();
-            print("count" + UPcount);
-            print("POISONCOUND" + POISONcount);
-            state = Battletest.CHOOSEACTION;
+            BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "毒發了";
+            EnemyIsDead = enemyUnit.TakeDamage(POISONdamage);
+            EnemyDamageHpSettle();
+
+            yield return new WaitForSeconds(1f);
+            BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "受到了" + POISONdamage + "點傷害";
+            POISONworked = true;
+
+            if (EnemyIsDead)
+            {
+                yield return new WaitForSeconds(1f);
+                BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "倒下了";
+                state = Battletest.WON;
+                EndBattle();
+            }
+            else
+            {
+                POISONcount--;
+                StartCoroutine(EndTrun());
+            }
         }
+        #endregion
+        #region 聖獸拋瓦改變型態
+        if (enemyUnit.unitName == "拋瓦")
+        {
+            yield return new WaitForSeconds(1f);
+            if (enemyUnit.Self.GetComponent<SpriteRenderer>().sprite == enemyUnit.nico)
+            {
+                enemyUnit.Self.GetComponent<SpriteRenderer>().sprite = enemyUnit.kimo;
+            }
+            else if (enemyUnit.Self.GetComponent<SpriteRenderer>().sprite == enemyUnit.kimo)
+            {
+                enemyUnit.Self.GetComponent<SpriteRenderer>().sprite = enemyUnit.nico;
+            }
+            BattleMessage.GetComponent<Text>().text = "拋瓦的型態改變了";
+            yield return new WaitForSeconds(1f);
+        }
+        #endregion
+        ReSet();
+        state = Battletest.CHOOSEACTION;
     }
 
     IEnumerator EndBattle()    //戰鬥結束
@@ -1444,47 +1488,6 @@ public class BattleSystem : MonoBehaviour
         else if (c4spr.sprite == spr34 && data.UndebuffPoison == 0)
         {
             c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
-        }
-    }
-
-    void UPCOUNT()    //高級強化倒數
-    {
-        if (UPcount > 0)
-        {
-            UPcount--;
-        }
-        else if(UPcount == 0)
-        {
-            data.atk = PlayerOriAtk;
-            data.def = PlayerOriDef;
-        }
-    }
-
-    IEnumerator POISONCOUNT()    //施毒傷害及倒數
-    {
-        if (POISONcount > 0)
-        {
-            yield return new WaitForSeconds(1f);
-            BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "毒發了";
-            EnemyIsDead = enemyUnit.TakeDamage(POISONdamage);
-            EnemyDamageHpSettle();
-
-            yield return new WaitForSeconds(1f);
-            BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "受到了" + POISONdamage + "點傷害";
-            POISONworked = true;
-
-            if (EnemyIsDead)
-            {
-                yield return new WaitForSeconds(1f);
-                BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "倒下了";
-                state = Battletest.WON;
-                EndBattle();
-            }
-            else
-            {
-                POISONcount--;
-                StartCoroutine(EndTrun());
-            }
         }
     }
 
