@@ -79,6 +79,7 @@ public class MapMove : MonoBehaviour
         Load2.SetActive(false);
         Load3.SetActive(false);
         for (int can = 0; can <= 3; can++)
+
             cannotuse[can].GetComponent<Image>().fillAmount = 0;
         for(int dir=0; dir <= 3; dir++)
             direction[dir].SetActive(false);
@@ -694,7 +695,6 @@ public class MapMove : MonoBehaviour
         }
         if (m == false && DragonWhatToFight.activeSelf == false)
         {
-            print("" + k.ToList().Count +l);
             if (k.ToList().Count == 0)
             {
                 l = false;
@@ -1231,18 +1231,20 @@ public class MapMove : MonoBehaviour
         public int unitLevel;
         public int atk;
         public int def;
+        public int speed;
         public float maxHp;
         public float currentHp;
         public int maxSkillPower;
         public int currySkillPower;
         public int[] maxExp;
         public int curryExp;
+        public int[] SkillNumber;
         public int ItemMax;
+        public int[] ItemNumber;
         public int RedPoison;
         public int BluePoison;
         public int BuffPoison;
         public int UndebuffPoison;
-        public int speed;
         public int mapNumber;
         public int Story;
         public bool ThievesDenOpen;

@@ -3,12 +3,12 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public enum BattleState { START, CHOOSEACTION,PLAYERTURN, ENEMYTURN, ENDTRUN, WON, LOST }
+public enum Battletest { START, CHOOSEACTION,PLAYERTURN, ENEMYTURN, ENDTRUN, WON, LOST }
 
 public class BattleSystem : MonoBehaviour
 {
     [SerializeField]
-    PlayerData data;
+    public PlayerData data;
 
     public AudioSource audBattle;
     public AudioClip BattleBGM, WonBGM, LoseBGM;
@@ -20,7 +20,7 @@ public class BattleSystem : MonoBehaviour
     public Sprite spr11, spr12, spr13, spr14, spr21, spr22, spr23, spr24, spr31, spr32, spr33, spr34;
 
     public GameObject playerPrefab;
-    public GameObject enemyPrefab;
+    public GameObject[] enemyPrefab;
     public GameObject PlayerHp, EnemyHp;
     public GameObject BattleMessage;
     public GameObject SkillItemName;
@@ -34,6 +34,8 @@ public class BattleSystem : MonoBehaviour
     public Transform enemyBattleStation;
 
     Unit enemyUnit;
+    int EnemyNumber;
+    int EnemyHit;
 
     public Text enemyName, enemyHp, playerHp;    //開始介面文字資訊
     public Text Won, getExe, Exe;    //勝利介面文字資訊
@@ -51,12 +53,12 @@ public class BattleSystem : MonoBehaviour
     bool Wonclicktorestart;
     bool Losechoose;
 
-    public BattleState state;
+    public Battletest state;
 
     private void Start()
     {
         data = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("Playerdata"));
-        data.currySkillPower = 5;
+        data.currySkillPower = data.maxSkillPower;
 
         audBattle.clip = BattleBGM;
         audBattle.Play();
@@ -69,7 +71,8 @@ public class BattleSystem : MonoBehaviour
 
         GameObject playerGo = Instantiate(playerPrefab, playerBattleStation);
 
-        GameObject enemyGo = Instantiate(enemyPrefab, enemyBattleStation);
+        MeetEnemy();
+        GameObject enemyGo = Instantiate(enemyPrefab[EnemyNumber], enemyBattleStation);
         enemyUnit = enemyGo.GetComponent<Unit>();
 
         playerOriLevel = data.unitLevel;
@@ -80,7 +83,7 @@ public class BattleSystem : MonoBehaviour
         UPcount = 0;
         POISONcount = 0;
 
-        state = BattleState.START;
+        state = Battletest.START;
         BattleMessage.GetComponent<Text>().text = "遭遇了" + enemyUnit.unitName;
         ReSet();
         SetupBattle();
@@ -93,7 +96,7 @@ public class BattleSystem : MonoBehaviour
         LoseChoose();
     }
 
-    private void SetupBattle()    //設定戰鬥必要數據
+    void SetupBattle()    //設定戰鬥必要數據
     {
         enemyName.text = enemyUnit.unitName;
         playerHp.text = data.currentHp.ToString() + "/" + data.maxHp.ToString();
@@ -115,11 +118,11 @@ public class BattleSystem : MonoBehaviour
         ReStart.SetActive(false);
         LevelUp.SetActive(false);
 
-        state = BattleState.CHOOSEACTION;
+        state = Battletest.CHOOSEACTION;
         ChooseAction();
     }
 
-    private void ChooseAction()    //回合開始、選擇操作、選擇行動整合
+    void ChooseAction()    //回合開始、選擇操作、選擇行動整合
     {
         if (i7 == false)
         {
@@ -133,7 +136,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private void BS()    //回合開始_選項展開
+    void BS()    //回合開始_選項展開
     {
         SpriteRenderer c1spr = c1.GetComponent<SpriteRenderer>();
         SpriteRenderer c2spr = c2.GetComponent<SpriteRenderer>();
@@ -162,7 +165,7 @@ public class BattleSystem : MonoBehaviour
             {
                 c2.transform.localPosition = Vector3.MoveTowards(c2.transform.localPosition, Vector3.zero, step);
             }
-            if (c2.transform.localPosition.x >= -2 && c1.transform.localPosition != Vector3.zero)
+            if (c2.transform.localPosition.x >= -2 && c1.transform.localPosition != o)
             {
                 c1.transform.localPosition = Vector3.MoveTowards(c1.transform.localPosition, o, step);
                 if (c1.transform.localPosition == o)
@@ -180,7 +183,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private void CT()    //基本選項操作（WASD上下左右；J確定；K取消）
+    void CT()    //基本選項操作（WASD上下左右；J確定；K取消）
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -320,7 +323,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private void CAD()    //選擇行動
+    void CAD()    //選擇行動
     {
         SpriteRenderer c1spr = c1.GetComponent<SpriteRenderer>();
         SpriteRenderer c2spr = c2.GetComponent<SpriteRenderer>();
@@ -342,9 +345,9 @@ public class BattleSystem : MonoBehaviour
                         ispr1 = false;
                         i6 = true;
                         i0 = true;
-                        if (state == BattleState.CHOOSEACTION)
+                        if (state == Battletest.CHOOSEACTION)
                         {
-                            state = BattleState.PLAYERTURN;
+                            state = Battletest.PLAYERTURN;
                             if (data.speed >= enemyUnit.speed)
                             {
                                 StartCoroutine(AttackSkill(c1.GetComponent<SpriteRenderer>().sprite.name));
@@ -374,14 +377,14 @@ public class BattleSystem : MonoBehaviour
                     if (c4.transform.localPosition == o)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
-                        if (state == BattleState.CHOOSEACTION)
+                        if (state == Battletest.CHOOSEACTION)
                         {
                             if (enemyUnit.unitName != "巨龍")
                             {
                                 ispr1 = false;
                                 i6 = true;
                                 i0 = true;
-                                state = BattleState.PLAYERTURN;
+                                state = Battletest.PLAYERTURN;
                                 StartCoroutine(Run());
                             }
                             else if (enemyUnit.unitName == "巨龍")
@@ -395,7 +398,7 @@ public class BattleSystem : MonoBehaviour
                 else if (ispr2 == true)    //技能選項
                 {
                     i6 = true;
-                    state = BattleState.PLAYERTURN;
+                    state = Battletest.PLAYERTURN;
                     if (c1.transform.localPosition == o && data.currySkillPower >= 2)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
@@ -484,7 +487,7 @@ public class BattleSystem : MonoBehaviour
                 else if (ispr3 == true)    //道具選項
                 {
                     i6 = true;
-                    state = BattleState.PLAYERTURN;
+                    state = Battletest.PLAYERTURN;
                     if (c1.transform.localPosition == o && data.RedPoison > 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
@@ -689,7 +692,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private void ReSet()    //恢復初始設定
+    void ReSet()    //恢復初始設定
     {
         c1.transform.localPosition = c;
         c2.transform.localPosition = c;
@@ -718,6 +721,8 @@ public class BattleSystem : MonoBehaviour
         c3spr.sprite = spr13;
         c4spr.sprite = spr14;
 
+        EnemyHit = 0;
+
         POISONworked = true;
         ReStartBattle.GetComponent<Image>().color = Color.gray;
     }
@@ -725,18 +730,15 @@ public class BattleSystem : MonoBehaviour
     IEnumerator EnemyTrun(string playerSKILLNAME)    //敵人攻擊
     {
         yield return new WaitForSeconds(1f);
-        BattleMessage.SetActive(true);
-        BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了攻擊";
 
-        SoundManager.SoundInstance.SoundEnemyAttack();
+        EnemyAttack();
 
-        int hit = enemyUnit.atk - data.def;
-        if (hit <= 0)
+        if (EnemyHit <= 0)
         {
-            hit = 0;
+            EnemyHit = 0;
         }
         bool isDead;
-        data.currentHp -= hit;
+        data.currentHp -= EnemyHit;
         if (data.currentHp <= 0)
         {
             isDead = true;
@@ -749,27 +751,55 @@ public class BattleSystem : MonoBehaviour
         PlayerDamageHpSettle();
 
         yield return new WaitForSeconds(1f);
-        BattleMessage.GetComponent<Text>().text = data.unitName + "受到了" + hit + "點傷害";
+        BattleMessage.GetComponent<Text>().text = data.unitName + "受到了" + EnemyHit + "點傷害";
 
         if (isDead == true)
         {
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = data.unitName + "倒下了";
-            state = BattleState.LOST;
+            state = Battletest.LOST;
             StartCoroutine(EndBattle());
         }
         else
         {
             if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
             {
-                state = BattleState.ENDTRUN;
+                state = Battletest.ENDTRUN;
                 StartCoroutine(EndTrun());
             }
             else
             {
-                state = BattleState.PLAYERTURN;
+                state = Battletest.PLAYERTURN;
                 StartCoroutine(AttackSkill(playerSKILLNAME));
             }
+        }
+    }
+
+    void MeetEnemy()    //在 N 地點遇見 M 敵人
+    {
+        if (data.mapNumber == 14)
+        {
+            int i = Random.Range(0, 2);
+            EnemyNumber = i;
+        }
+    }
+
+    public void EnemyAttack()
+    {
+        if (enemyUnit.unitName == "巨龍")
+        {
+            BattleMessage.SetActive(true);
+            BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了攻擊";
+            SoundManager.SoundInstance.SoundEnemyAttack();
+            EnemyHit = enemyUnit.atk - data.def;
+        }
+
+        if (enemyUnit.unitName == "拋瓦")
+        {
+            BattleMessage.SetActive(true);
+            BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了攻擊";
+            SoundManager.SoundInstance.SoundEnemyAttack();
+            EnemyHit = enemyUnit.atk - data.def;
         }
     }
 
@@ -828,12 +858,12 @@ public class BattleSystem : MonoBehaviour
 
             if (data.speed >= enemyUnit.speed)
             {
-                state = BattleState.ENEMYTURN;
+                state = Battletest.ENEMYTURN;
                 StartCoroutine(EnemyTrun(null));
             }
             else
             {
-                state = BattleState.ENDTRUN;
+                state = Battletest.ENDTRUN;
                 StartCoroutine(EndTrun());
             }
         }
@@ -927,7 +957,7 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "中毒了";
 
-            state = BattleState.ENEMYTURN;
+            state = Battletest.ENEMYTURN;
             StartCoroutine(EnemyTrun(null));
         }
         #endregion
@@ -983,7 +1013,7 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = data.unitName + "的攻擊、防禦大幅提升";
 
-            state = BattleState.ENEMYTURN;
+            state = Battletest.ENEMYTURN;
             StartCoroutine(EnemyTrun(null));
         }
         #endregion
@@ -997,7 +1027,7 @@ public class BattleSystem : MonoBehaviour
             SoundManager.SoundInstance.SoundBuff();
             BattleMessage.GetComponent<Text>().text = data.unitName + "的負面狀態消失了";
 
-            state = BattleState.ENEMYTURN;
+            state = Battletest.ENEMYTURN;
             StartCoroutine(EnemyTrun(null));
         }
         #endregion
@@ -1023,7 +1053,7 @@ public class BattleSystem : MonoBehaviour
             ReSet();
             print("count" + UPcount);
             print("POISONCOUND" + POISONcount);
-            state = BattleState.CHOOSEACTION;
+            state = Battletest.CHOOSEACTION;
         }
     }
 
@@ -1035,7 +1065,7 @@ public class BattleSystem : MonoBehaviour
         data.atk = PlayerOriAtk;    //攻擊力回歸初始值
         data.def = PlayerOriDef;    //防禦力回歸初始值
 
-        if (state == BattleState.WON)    //勝利
+        if (state == Battletest.WON)    //勝利
         {
             audBattle.clip = WonBGM;
             audBattle.Play();
@@ -1143,7 +1173,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
         
-        if (state == BattleState.LOST)    //戰敗
+        if (state == Battletest.LOST)    //戰敗
         {
             audBattle.clip = LoseBGM;
             audBattle.Play();
@@ -1152,7 +1182,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    public void WonClickToRestart()    //勝利後點擊重啟戰鬥
+    void WonClickToRestart()    //勝利後點擊重啟戰鬥
     {
         if (Wonclicktorestart == true)
         {
@@ -1162,7 +1192,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
     }
-    public void LoseChoose()           //死亡後選項操作
+    void LoseChoose()           //死亡後選項操作
     {
         if (Losechoose == true)
         {
@@ -1220,20 +1250,20 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    public void DelayRestartGame()    //回戰鬥畫面
+    void DelayRestartGame()    //回戰鬥畫面
     {
         SceneManager.LoadScene("戰鬥畫面");
     }
-    public void DelayReturnMap()      //回大地圖
+    void DelayReturnMap()      //回大地圖
     {
         SceneManager.LoadScene("大地圖");
     }
-    public void DelayReturnMenu()     //回主畫面
+    void DelayReturnMenu()     //回主畫面
     {
         SceneManager.LoadScene("主畫面");
     }
 
-    private void EnemyDamageHpSettle()     //敵人血條扣除傷害結算
+    void EnemyDamageHpSettle()     //敵人血條扣除傷害結算
     {
         if (enemyUnit.currentHp <= 0)
         {
@@ -1249,7 +1279,7 @@ public class BattleSystem : MonoBehaviour
             enemyHp.text = enemyUnit.currentHp.ToString() + "/" + enemyUnit.maxHp.ToString();
         }
     }
-    private void PlayerDamageHpSettle()    //玩家血條扣除傷害結算
+    void PlayerDamageHpSettle()    //玩家血條扣除傷害結算
     {
         if (data.currentHp <= 0)
         {
@@ -1272,25 +1302,25 @@ public class BattleSystem : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "倒下了";
-            state = BattleState.WON;
+            state = Battletest.WON;
             StartCoroutine(EndBattle());
         }
         else
         {
             if (data.speed >= enemyUnit.speed)
             {
-                state = BattleState.ENEMYTURN;
+                state = Battletest.ENEMYTURN;
                 StartCoroutine(EnemyTrun(null));
             }
             else
             {
-                state = BattleState.ENDTRUN;
+                state = Battletest.ENDTRUN;
                 StartCoroutine(EndTrun());
             }
         }
     }
 
-    private void SkillPowerExpend(int h)    //消耗能量點數後的能量顯示
+    void SkillPowerExpend(int h)    //消耗能量點數後的能量顯示
     {
         data.currySkillPower -= h;
         int i = data.currySkillPower;
@@ -1310,7 +1340,7 @@ public class BattleSystem : MonoBehaviour
         SkillPower[i].SetActive(true);
     }
 
-    private void CanNatUse()    //無法使用技能或道具
+    void CanNatUse()    //無法使用技能或道具
     {
         SpriteRenderer c1spr = c1.GetComponent<SpriteRenderer>();
         SpriteRenderer c2spr = c2.GetComponent<SpriteRenderer>();
@@ -1405,7 +1435,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private void UPCOUNT()    //高級強化倒數
+    void UPCOUNT()    //高級強化倒數
     {
         if (UPcount > 0)
         {
@@ -1435,7 +1465,7 @@ public class BattleSystem : MonoBehaviour
             {
                 yield return new WaitForSeconds(1f);
                 BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "倒下了";
-                state = BattleState.WON;
+                state = Battletest.WON;
                 EndBattle();
             }
             else
@@ -1453,18 +1483,20 @@ public class BattleSystem : MonoBehaviour
         public int unitLevel;
         public int atk;
         public int def;
+        public int speed;
         public float maxHp;
         public float currentHp;
         public int maxSkillPower;
         public int currySkillPower;
         public int[] maxExp;
         public int curryExp;
+                public int[] SkillNumber;
         public int ItemMax;
+        public int[] ItemNumber;
         public int RedPoison;
         public int BluePoison;
         public int BuffPoison;
         public int UndebuffPoison;
-        public int speed;
         public int mapNumber;
         public int Story;
         public bool ThievesDenOpen;

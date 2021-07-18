@@ -147,6 +147,7 @@ public class GameMenu : MonoBehaviour
         public int unitLevel;
         public int atk;
         public int def;
+        public int speed;
         public float maxHp;
         public float currentHp;
         public int maxSkillPower;
@@ -158,7 +159,6 @@ public class GameMenu : MonoBehaviour
         public int BluePoison;
         public int BuffPoison;
         public int UndebuffPoison;
-        public int speed;
         public int mapNumber;
         public int Story;
         public bool ThievesDenOpen;
