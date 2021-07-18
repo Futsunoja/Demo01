@@ -823,7 +823,9 @@ MonoBehaviour:
     currySkillPower: 0
     maxExp: 
     curryExp: 0
+    SkillNumber: 
     ItemMax: 0
+    ItemNumber: 
     RedPoison: 0
     BluePoison: 0
     BuffPoison: 0
@@ -5369,6 +5371,7 @@ MonoBehaviour:
   soundNearDeathSlash: {fileID: 8300000, guid: 1389b120383fb5d49941e2aecbd805bd, type: 3}
   soundDrink: {fileID: 8300000, guid: 86ec89b26f648de4693baafbd4626149, type: 3}
   soundEnemyAttack: {fileID: 8300000, guid: 74fc2bd96f733d6449300ab2da5e94ec, type: 3}
+  soundRun: {fileID: 8300000, guid: acb77dbb3c8608c449ba5cfbe5a4850e, type: 3}
 --- !u!4 &1452733386
 Transform:
   m_ObjectHideFlags: 0

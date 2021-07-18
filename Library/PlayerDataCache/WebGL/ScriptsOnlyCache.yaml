@@ -440,7 +440,7 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
-      Hash: ff838b85507944a574aa1880b7b14e0a
+      Hash: 97b43a90044ad84f971207d54bef5358
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SoundManager

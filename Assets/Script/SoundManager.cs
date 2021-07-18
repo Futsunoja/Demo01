@@ -4,7 +4,7 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager SoundInstance;
     public AudioSource aud;
-    public AudioClip soundHitEnter, soundHitCancel, soundAttack, soundBlast, soundBuff, soundThirdSlash, soundNearDeathSlash, soundDrink, soundEnemyAttack;
+    public AudioClip soundHitEnter, soundHitCancel, soundAttack, soundBlast, soundBuff, soundThirdSlash, soundNearDeathSlash, soundDrink, soundEnemyAttack, soundRun;
 
     private void Awake()
     {
@@ -62,6 +62,12 @@ public class SoundManager : MonoBehaviour
     public void SoundEnemyAttack()
     {
         aud.clip = soundEnemyAttack;
+        aud.Play();
+    }
+
+    public void SoundRun()
+    {
+        aud.clip = soundRun;
         aud.Play();
     }
 }

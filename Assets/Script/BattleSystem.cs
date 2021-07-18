@@ -256,7 +256,14 @@ public class BattleSystem : MonoBehaviour
             }
             if (c4.transform.localPosition == o)
             {
-                BattleMessage.GetComponent<Text>().text = "無法逃跑\n 請選擇其他行動";
+                if (enemyUnit.unitName == "巨龍")
+                {
+                    BattleMessage.GetComponent<Text>().text = "無法逃跑\n 請選擇其他行動";
+                }
+                else
+                {
+                    BattleMessage.GetComponent<Text>().text = "請選擇行動";
+                }
             }
         }
         if (ispr1 == false && ispr2 == true && ispr3 == false)
@@ -384,7 +391,7 @@ public class BattleSystem : MonoBehaviour
                                 ispr1 = false;
                                 i6 = true;
                                 i0 = true;
-                                state = Battletest.PLAYERTURN;
+                                BattleMessage.SetActive(false);
                                 StartCoroutine(Run());
                             }
                             else if (enemyUnit.unitName == "巨龍")
@@ -1036,8 +1043,13 @@ public class BattleSystem : MonoBehaviour
     IEnumerator Run()    //玩家逃跑
     {
         yield return new WaitForSeconds(1f);
-        print("逃跑");
+        SoundManager.SoundInstance.SoundRun();
+        yield return new WaitForSeconds(1f);
+        BattleMessage.SetActive(true);
+        BattleMessage.GetComponent<Text>().text = data.unitName + "逃跑了";
+        yield return new WaitForSeconds(1.5f);
         ReSet();
+        DelayReturnMap();
     }
 
     IEnumerator EndTrun()    //此回合結束
