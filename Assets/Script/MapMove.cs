@@ -23,6 +23,12 @@ public class MapMove : MonoBehaviour
     public GameObject DragonWhatToFight;
     public Transform canvas;
 
+    public GameObject Strengthen;
+    bool OpenStrengthen;
+    public GameObject StrengthenChoose;
+    public GameObject[] Equipment;
+    public GameObject[] EquipmentShow;
+
     public GameObject Meet;
     public GameObject FirstPlayer, FirstGirl;
     public Transform PlayerTra, GirlTra;
@@ -78,8 +84,13 @@ public class MapMove : MonoBehaviour
         Load1.SetActive(false);
         Load2.SetActive(false);
         Load3.SetActive(false);
-        for (int can = 0; can <= 3; can++)
+        Strengthen.SetActive(false);
+        for(int show = 0; show <= 4; show++)
+        {
+            EquipmentShow[show].SetActive(false);
+        }
 
+        for (int can = 0; can <= 3; can++)
             cannotuse[can].GetComponent<Image>().fillAmount = 0;
         for(int dir=0; dir <= 3; dir++)
             direction[dir].SetActive(false);
@@ -111,6 +122,7 @@ public class MapMove : MonoBehaviour
             mapCtrl();
             menuAni();
             mapMenu();
+            StrengthenCtrl();
         }
     }
 
@@ -759,7 +771,7 @@ public class MapMove : MonoBehaviour
 
     private void mapMenu()    //小女孩介面操作
     {
-        if (m == true && girlani == false && SaveRun==false)
+        if (m == true && girlani == false && SaveRun == false && OpenStrengthen == false)
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
@@ -866,6 +878,14 @@ public class MapMove : MonoBehaviour
                 {
                     audMap.PlayOneShot(Hit);
                     m = false;
+                }
+                if (forg.GetComponent<Image>().color == Color.green)
+                {
+                    OpenStrengthen = true;
+                    MapMenu.SetActive(false);
+                    Strengthen.SetActive(true);
+                    StrengthenChoose.transform.localPosition = Equipment[0].transform.localPosition;
+                    EquipmentShow[0].SetActive(true);
                 }
                 if (sav.GetComponent<Image>().color == Color.green)
                 {
@@ -1089,6 +1109,91 @@ public class MapMove : MonoBehaviour
         }
     }
 
+    private void StrengthenCtrl()
+    {
+        if (Input.GetKeyDown(KeyCode.S) && OpenStrengthen == true)
+        {
+            if (StrengthenChoose.transform.localPosition == Equipment[0].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[1].transform.localPosition;
+                EquipmentShow[0].SetActive(false);
+                EquipmentShow[1].SetActive(true);
+            }
+            else if (StrengthenChoose.transform.localPosition == Equipment[1].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[2].transform.localPosition;
+                EquipmentShow[1].SetActive(false);
+                EquipmentShow[2].SetActive(true);
+            }
+            else if (StrengthenChoose.transform.localPosition == Equipment[2].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[3].transform.localPosition;
+                EquipmentShow[2].SetActive(false);
+                EquipmentShow[3].SetActive(true);
+            }
+            else if (StrengthenChoose.transform.localPosition == Equipment[3].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[4].transform.localPosition;
+                EquipmentShow[3].SetActive(false);
+                EquipmentShow[4].SetActive(true);
+            }
+            else if (StrengthenChoose.transform.localPosition == Equipment[4].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[0].transform.localPosition;
+                EquipmentShow[4].SetActive(false);
+                EquipmentShow[0].SetActive(true);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.W) && OpenStrengthen == true)
+        {
+            if (StrengthenChoose.transform.localPosition == Equipment[0].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[4].transform.localPosition;
+                EquipmentShow[0].SetActive(false);
+                EquipmentShow[4].SetActive(true);
+            }
+            else if (StrengthenChoose.transform.localPosition == Equipment[1].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[0].transform.localPosition;
+                EquipmentShow[1].SetActive(false);
+                EquipmentShow[0].SetActive(true);
+            }
+            else if (StrengthenChoose.transform.localPosition == Equipment[2].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[1].transform.localPosition;
+                EquipmentShow[2].SetActive(false);
+                EquipmentShow[1].SetActive(true);
+            }
+            else if (StrengthenChoose.transform.localPosition == Equipment[3].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[2].transform.localPosition;
+                EquipmentShow[3].SetActive(false);
+                EquipmentShow[2].SetActive(true);
+            }
+            else if (StrengthenChoose.transform.localPosition == Equipment[4].transform.localPosition)
+            {
+                StrengthenChoose.transform.localPosition = Equipment[3].transform.localPosition;
+                EquipmentShow[4].SetActive(false);
+                EquipmentShow[3].SetActive(true);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.J) && OpenStrengthen == true)
+        {
+            audMap.PlayOneShot(Hit);
+        }
+        if (Input.GetKeyDown(KeyCode.K) && OpenStrengthen == true)
+        {
+            audMap.PlayOneShot(OpenMenu);
+            Strengthen.SetActive(false);
+            MapMenu.SetActive(true);
+            OpenStrengthen = false;
+            for (int show = 0; show <= 4; show++)
+            {
+                EquipmentShow[show].SetActive(false);
+            }
+        }
+    }
+
     private void MeetLittleGirl()    //初遇小女孩
     {
         if (Input.GetKeyDown(KeyCode.J) && canInput == true && runDialogue == false)
@@ -1241,10 +1346,16 @@ public class MapMove : MonoBehaviour
         public int[] SkillNumber;
         public int ItemMax;
         public int[] ItemNumber;
+        public int[] ItemQuantity;
         public int RedPoison;
         public int BluePoison;
         public int BuffPoison;
         public int UndebuffPoison;
+        public int HeadwearLevel;
+        public int SwordLevel;
+        public int ShieldLevel;
+        public int ClothesLevel;
+        public int ShoesLevel;
         public int mapNumber;
         public int Story;
         public bool ThievesDenOpen;

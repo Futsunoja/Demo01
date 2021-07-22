@@ -33,6 +33,8 @@ public class BattleSystem : MonoBehaviour
     public Transform playerBattleStation;
     public Transform enemyBattleStation;
 
+    SkillUnit skillUnit1, skillUnit2, skillUnit3, skillUnit4;
+    ItemUnit itemUnit1, itemUnit2, itemUnit3, itemUnit4;
     Unit enemyUnit;
     int EnemyNumber;
     int EnemyHit;
@@ -48,7 +50,6 @@ public class BattleSystem : MonoBehaviour
     int UPcount;         //強化倒數
     int POISONcount;     //毒倒數
     int POISONdamage;    //毒傷害
-    bool POISONworked;   //毒傷害是否運作過
     bool EnemyIsDead;    //是否死亡
     bool Wonclicktorestart;
     bool Losechoose;
@@ -70,6 +71,26 @@ public class BattleSystem : MonoBehaviour
         c4.transform.localPosition = c;
 
         Instantiate(playerPrefab, playerBattleStation);
+
+        skillUnit1 = gameObject.GetComponent<SkillManager>().skillPrefab[data.SkillNumber[0]].GetComponent<SkillUnit>();
+        skillUnit2 = gameObject.GetComponent<SkillManager>().skillPrefab[data.SkillNumber[1]].GetComponent<SkillUnit>();
+        skillUnit3 = gameObject.GetComponent<SkillManager>().skillPrefab[data.SkillNumber[2]].GetComponent<SkillUnit>();
+        skillUnit4 = gameObject.GetComponent<SkillManager>().skillPrefab[data.SkillNumber[3]].GetComponent<SkillUnit>();
+
+        itemUnit1 = gameObject.GetComponent<ItemManager>().ItemPrefab[data.ItemNumber[0]].GetComponent<ItemUnit>();
+        itemUnit2 = gameObject.GetComponent<ItemManager>().ItemPrefab[data.ItemNumber[1]].GetComponent<ItemUnit>();
+        itemUnit3 = gameObject.GetComponent<ItemManager>().ItemPrefab[data.ItemNumber[2]].GetComponent<ItemUnit>();
+        itemUnit4 = gameObject.GetComponent<ItemManager>().ItemPrefab[data.ItemNumber[3]].GetComponent<ItemUnit>();
+
+        spr21 = skillUnit1.SkillSprite;
+        spr22 = skillUnit2.SkillSprite;
+        spr23 = skillUnit3.SkillSprite;
+        spr24 = skillUnit4.SkillSprite;
+
+        spr31 = itemUnit1.ItemSprite;
+        spr32 = itemUnit2.ItemSprite;
+        spr33 = itemUnit3.ItemSprite;
+        spr34 = itemUnit4.ItemSprite;
 
         MeetEnemy();
         GameObject enemyGo = Instantiate(enemyPrefab[EnemyNumber], enemyBattleStation);
@@ -272,29 +293,29 @@ public class BattleSystem : MonoBehaviour
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = "【狂擊】";
-                SkillItemEffect.GetComponent<Text>().text = "消耗2點能量，使出全力攻擊敵人，對\n敵人造成巨大的傷害。";
+                SkillItemName.GetComponent<Text>().text = "" + skillUnit1.SkillName;
+                SkillItemEffect.GetComponent<Text>().text = "" + skillUnit1.SkillIntro;
             }
             if (c2.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = "【高級強化】";
-                SkillItemEffect.GetComponent<Text>().text = "消耗1點能量，攻擊力與防禦力大幅提\n升三個回合。";
+                SkillItemName.GetComponent<Text>().text = "" + skillUnit2.SkillName;
+                SkillItemEffect.GetComponent<Text>().text = "" + skillUnit2.SkillIntro;
             }
             if (c3.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = "【三連擊】";
-                SkillItemEffect.GetComponent<Text>().text = "消耗3點能量，使出快速的斬擊造成敵\n人三次傷害。";
+                SkillItemName.GetComponent<Text>().text = "" + skillUnit3.SkillName;
+                SkillItemEffect.GetComponent<Text>().text = "" + skillUnit3.SkillIntro;
             }
             if (c4.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = "【瀕死一擊】";
-                SkillItemEffect.GetComponent<Text>().text = "消耗3點能量，面臨死亡激發出強大的\n力量進行攻擊，血量越低傷害越高。";
+                SkillItemName.GetComponent<Text>().text = "" + skillUnit4.SkillName;
+                SkillItemEffect.GetComponent<Text>().text = "" + skillUnit4.SkillIntro;
             }
         }
         if (ispr1 == false && ispr2 == false && ispr3 == true)
@@ -303,29 +324,29 @@ public class BattleSystem : MonoBehaviour
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = "【紅藥水】　　　　　　擁有"+data.RedPoison+"個";
-                SkillItemEffect.GetComponent<Text>().text = "血量恢復50點。";
+                SkillItemName.GetComponent<Text>().text = itemUnit1.ItemName + "擁有" + data.RedPoison + "個";
+                SkillItemEffect.GetComponent<Text>().text = "" + itemUnit1.ItemIntro;
             }
             if (c2.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = "【藍藥水】　　　　　　擁有"+data.BluePoison+"個";
-                SkillItemEffect.GetComponent<Text>().text = "能量恢復1點。";
+                SkillItemName.GetComponent<Text>().text = itemUnit2.ItemName + "擁有" + data.BluePoison + "個";
+                SkillItemEffect.GetComponent<Text>().text = "" + itemUnit2.ItemIntro;
             }
             if (c3.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = "【秘藥】　　　　　　　擁有" + data.BuffPoison + "個";
-                SkillItemEffect.GetComponent<Text>().text = "攻擊力與防禦力大幅提升。";
+                SkillItemName.GetComponent<Text>().text = itemUnit3.ItemName + "擁有" + data.BuffPoison + "個";
+                SkillItemEffect.GetComponent<Text>().text = "" + itemUnit3.ItemIntro;
             }
             if (c4.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = "【萬能藥】　　　　　　擁有" + data.UndebuffPoison + "個";
-                SkillItemEffect.GetComponent<Text>().text = "消除所有不良狀態。";
+                SkillItemName.GetComponent<Text>().text = itemUnit4.ItemName + "擁有" + data.UndebuffPoison + "個";
+                SkillItemEffect.GetComponent<Text>().text = "" + itemUnit4.ItemIntro;
             }
         }
     }
@@ -406,7 +427,7 @@ public class BattleSystem : MonoBehaviour
                 {
                     i6 = true;
                     state = Battletest.PLAYERTURN;
-                    if (c1.transform.localPosition == o && data.currySkillPower >= 2)
+                    if (c1.transform.localPosition == o && data.currySkillPower >= skillUnit1.Cost)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         if (data.speed >= enemyUnit.speed)
@@ -421,13 +442,13 @@ public class BattleSystem : MonoBehaviour
                         SkillItemEffect.SetActive(false);
                         i0 = true;
                     }
-                    else if (c1.transform.localPosition == o && data.currySkillPower < 3)
+                    else if (c1.transform.localPosition == o && data.currySkillPower < skillUnit1.Cost)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
-                    if (c2.transform.localPosition == o && data.currySkillPower >= 1)
+                    if (c2.transform.localPosition == o && data.currySkillPower >= skillUnit2.Cost)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         if (data.speed >= enemyUnit.speed)
@@ -442,13 +463,13 @@ public class BattleSystem : MonoBehaviour
                         SkillItemEffect.SetActive(false);
                         i0 = true;
                     }
-                    else if (c2.transform.localPosition == o && data.currySkillPower < 1)
+                    else if (c2.transform.localPosition == o && data.currySkillPower < skillUnit2.Cost)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
-                    if (c3.transform.localPosition == o && data.currySkillPower >= 3)
+                    if (c3.transform.localPosition == o && data.currySkillPower >= skillUnit3.Cost)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         if (data.speed >= enemyUnit.speed)
@@ -463,13 +484,13 @@ public class BattleSystem : MonoBehaviour
                         SkillItemEffect.SetActive(false);
                         i0 = true;
                     }
-                    else if (c3.transform.localPosition == o && data.currySkillPower < 3)
+                    else if (c3.transform.localPosition == o && data.currySkillPower < skillUnit3.Cost)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
-                    if (c4.transform.localPosition == o && data.currySkillPower >= 3)
+                    if (c4.transform.localPosition == o && data.currySkillPower >= skillUnit4.Cost)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         if (data.speed >= enemyUnit.speed)
@@ -484,7 +505,7 @@ public class BattleSystem : MonoBehaviour
                         SkillItemEffect.SetActive(false);
                         i0 = true;
                     }
-                    else if (c4.transform.localPosition == o && data.currySkillPower < 3)
+                    else if (c4.transform.localPosition == o && data.currySkillPower < skillUnit4.Cost)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
@@ -658,6 +679,10 @@ public class BattleSystem : MonoBehaviour
                             c2spr.sprite = spr22;
                             c3spr.sprite = spr23;
                             c4spr.sprite = spr24;
+                            //c1spr.sprite = skillUnit[0].SkillSprite;
+                            //c2spr.sprite = skillUnit[1].SkillSprite;
+                            //c3spr.sprite = skillUnit[2].SkillSprite;
+                            //c4spr.sprite = skillUnit[3].SkillSprite;
                         }
                         if (ispr3 == true)
                         {
@@ -730,7 +755,6 @@ public class BattleSystem : MonoBehaviour
 
         EnemyHit = 0;
 
-        POISONworked = true;
         ReStartBattle.GetComponent<Image>().color = Color.gray;
     }
 
@@ -981,38 +1005,39 @@ public class BattleSystem : MonoBehaviour
         SoundManager.SoundInstance.SoundDrink();
 
         #region 01_紅藥水
-        if (ITEMNAME == "紅藥水")
+        if (ITEMNAME == "高級紅藥水")
         {
             data.RedPoison -= 1;
 
-            data.currentHp += 50;
+            float RestoreHP = Mathf.Round(data.maxHp * 0.6f);
+            data.currentHp += RestoreHP;
             data.currentHp = Mathf.Clamp(data.currentHp, 0, data.maxHp);
             PlayerHp.GetComponent<Image>().fillAmount = data.currentHp / data.maxHp;
             playerHp.text = data.currentHp.ToString() + "/" + data.maxHp.ToString();
 
             yield return new WaitForSeconds(1f);
-            BattleMessage.GetComponent<Text>().text = data.unitName + "恢復了" + 50 + "點血量";
+            BattleMessage.GetComponent<Text>().text = data.unitName + "恢復了" + RestoreHP + "點血量";
 
             StartCoroutine(EnemyTrun(null));
         }
         #endregion
 
         #region 02_藍藥水
-        if (ITEMNAME == "藍藥水")
+        if (ITEMNAME == "高級藍藥水")
         {
             data.BluePoison -= 1;
 
-            SkillPowerExpend(-1);
+            SkillPowerExpend(-3);
 
             yield return new WaitForSeconds(1f);
-            BattleMessage.GetComponent<Text>().text = data.unitName + "恢復了" + 1 + "點能量";
+            BattleMessage.GetComponent<Text>().text = data.unitName + "恢復了" + 3 + "點能量";
 
             StartCoroutine(EnemyTrun(null));
         }
         #endregion
 
         #region 03_秘藥
-        if (ITEMNAME == "秘藥")
+        if (ITEMNAME == "高級秘藥")
         {
             data.BuffPoison -= 1;
 
@@ -1021,15 +1046,15 @@ public class BattleSystem : MonoBehaviour
             UPcount = 3;
 
             yield return new WaitForSeconds(1f);
-            BattleMessage.GetComponent<Text>().text = data.unitName + "的攻擊、防禦大幅提升";
+            BattleMessage.GetComponent<Text>().text = data.unitName + "的攻擊力、防禦力與速度大幅提升";
 
             state = Battletest.ENEMYTURN;
             StartCoroutine(EnemyTrun(null));
         }
         #endregion
 
-        #region 04_秘藥
-        if (ITEMNAME == "萬能藥")
+        #region 04_萬能草
+        if (ITEMNAME == "萬能草")
         {
             data.UndebuffPoison -= 1;
 
@@ -1077,7 +1102,6 @@ public class BattleSystem : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "受到了" + POISONdamage + "點傷害";
-            POISONworked = true;
 
             if (EnemyIsDead)
             {
@@ -1505,13 +1529,19 @@ public class BattleSystem : MonoBehaviour
         public int currySkillPower;
         public int[] maxExp;
         public int curryExp;
-                public int[] SkillNumber;
+        public int[] SkillNumber;
         public int ItemMax;
         public int[] ItemNumber;
+        public int[] ItemQuantity;
         public int RedPoison;
         public int BluePoison;
         public int BuffPoison;
         public int UndebuffPoison;
+        public int HeadwearLevel;
+        public int SwordLevel;
+        public int ShieldLevel;
+        public int ClothesLevel;
+        public int ShoesLevel;
         public int mapNumber;
         public int Story;
         public bool ThievesDenOpen;
