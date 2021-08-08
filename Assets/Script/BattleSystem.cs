@@ -730,7 +730,7 @@ public class BattleSystem : MonoBehaviour
                 {
                     c2.transform.localPosition = Vector3.MoveTowards(c2.transform.localPosition, Vector3.zero, step);
                 }
-                if (c2.transform.localPosition.x >= -2 && c1.transform.localPosition != Vector3.zero)
+                if (c2.transform.localPosition.x >= -2 && c1.transform.localPosition != o)
                 {
                     c1.transform.localPosition = Vector3.MoveTowards(c1.transform.localPosition, o, step);
                     if (c1.transform.localPosition == o)
