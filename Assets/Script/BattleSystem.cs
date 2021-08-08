@@ -881,7 +881,7 @@ public class BattleSystem : MonoBehaviour
                 if (i >= 0 && i < a)    //龍息
                 {
                     BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了龍息";
-                    EnemyHit = Mathf.CeilToInt(enemyUnit.atk * 1.3f - data.def);
+                    EnemyHit = Mathf.CeilToInt(enemyUnit.atk * 1.2f - data.def);
                     yield return new WaitForSeconds(1f);
 
                     #region 傷害結算與死亡判定
