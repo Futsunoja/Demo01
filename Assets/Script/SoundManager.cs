@@ -8,6 +8,7 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
+        aud.volume = 0.2f;
         SoundInstance = this;
     }
 

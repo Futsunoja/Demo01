@@ -3,10 +3,14 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - BattleSystem
     - GameMenu
+    - ItemManager
     - MapMove
     - SaveLoadDataTest
+    - SkillManager
+    - SkillUnit
     - SoundManager
     - StoryOpen
+    - StrengthenCtrl
     - TalkOpen
     - TalkOpenCetral
     - Unit
@@ -55,17 +59,17 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11234}
     - Class: 114
-      Script: {instanceID: 11236}
+      Script: {instanceID: 11254}
     - Class: 114
-      Script: {instanceID: 11256}
+      Script: {instanceID: 11468}
     - Class: 114
-      Script: {instanceID: 11864}
+      Script: {instanceID: 11868}
     - Class: 114
-      Script: {instanceID: 11888}
+      Script: {instanceID: 11892}
     - Class: 114
-      Script: {instanceID: 12826}
+      Script: {instanceID: 12834}
     - Class: 114
-      Script: {instanceID: 13210}
+      Script: {instanceID: 13220}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -108,21 +112,21 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11234}
     - Class: 114
-      Script: {instanceID: 11236}
+      Script: {instanceID: 11254}
     - Class: 114
-      Script: {instanceID: 11256}
+      Script: {instanceID: 11468}
     - Class: 114
-      Script: {instanceID: 11888}
+      Script: {instanceID: 11892}
     - Class: 114
-      Script: {instanceID: 11962}
+      Script: {instanceID: 11966}
     - Class: 114
-      Script: {instanceID: 12238}
+      Script: {instanceID: 12242}
     - Class: 114
-      Script: {instanceID: 12648}
+      Script: {instanceID: 12656}
     - Class: 114
-      Script: {instanceID: 12826}
+      Script: {instanceID: 12834}
     - Class: 114
-      Script: {instanceID: 13210}
+      Script: {instanceID: 13220}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -171,21 +175,25 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11234}
     - Class: 114
-      Script: {instanceID: 11236}
+      Script: {instanceID: 11254}
     - Class: 114
-      Script: {instanceID: 11256}
+      Script: {instanceID: 11272}
     - Class: 114
-      Script: {instanceID: 11386}
+      Script: {instanceID: 11388}
     - Class: 114
-      Script: {instanceID: 11784}
+      Script: {instanceID: 11468}
     - Class: 114
-      Script: {instanceID: 11888}
+      Script: {instanceID: 11788}
     - Class: 114
-      Script: {instanceID: 12648}
+      Script: {instanceID: 11892}
     - Class: 114
-      Script: {instanceID: 12826}
+      Script: {instanceID: 12400}
     - Class: 114
-      Script: {instanceID: 13210}
+      Script: {instanceID: 12656}
+    - Class: 114
+      Script: {instanceID: 12834}
+    - Class: 114
+      Script: {instanceID: 13220}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -230,25 +238,31 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11234}
     - Class: 114
-      Script: {instanceID: 11236}
+      Script: {instanceID: 11254}
     - Class: 114
-      Script: {instanceID: 11256}
+      Script: {instanceID: 11376}
     - Class: 114
-      Script: {instanceID: 11686}
+      Script: {instanceID: 11468}
     - Class: 114
-      Script: {instanceID: 11784}
+      Script: {instanceID: 11690}
     - Class: 114
-      Script: {instanceID: 11790}
+      Script: {instanceID: 11788}
     - Class: 114
-      Script: {instanceID: 11888}
+      Script: {instanceID: 11794}
     - Class: 114
-      Script: {instanceID: 11900}
+      Script: {instanceID: 11892}
     - Class: 114
-      Script: {instanceID: 12402}
+      Script: {instanceID: 11904}
     - Class: 114
-      Script: {instanceID: 12826}
+      Script: {instanceID: 12400}
     - Class: 114
-      Script: {instanceID: 13210}
+      Script: {instanceID: 12408}
+    - Class: 114
+      Script: {instanceID: 12834}
+    - Class: 114
+      Script: {instanceID: 13028}
+    - Class: 114
+      Script: {instanceID: 13220}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -278,16 +292,16 @@ ScriptsOnlyBuild:
     className: Text
   - hash:
       serializedVersion: 2
-      Hash: 89f9a1b4c64db9559e39f4a2e3bfaadd
-    assemblyName: UnityEngine.UI.dll
-    namespaceName: UnityEngine.UI
-    className: Image
-  - hash:
-      serializedVersion: 2
       Hash: 4bc4346a71a8df53a6b106f68ef3a190
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: CanvasScaler
+  - hash:
+      serializedVersion: 2
+      Hash: dfb496ca021cb4108ecd523b0e88f238
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StrengthenCtrl
   - hash:
       serializedVersion: 2
       Hash: c42672c997f8be6b1aa86a927ebea785
@@ -320,7 +334,13 @@ ScriptsOnlyBuild:
     className: PlayerQuitHandler
   - hash:
       serializedVersion: 2
-      Hash: 680bb1477360e9267a782e7d5fc3430e
+      Hash: 9cff63ffa6bfd44e5d4f0d818b068d0f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SkillManager
+  - hash:
+      serializedVersion: 2
+      Hash: 49f8ed092a645619b7233f4112d94eb4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MapMove
@@ -354,6 +374,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
     className: TouchInputModule
+  - hash:
+      serializedVersion: 2
+      Hash: 89f9a1b4c64db9559e39f4a2e3bfaadd
+    assemblyName: UnityEngine.UI.dll
+    namespaceName: UnityEngine.UI
+    className: Image
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -416,7 +442,7 @@ ScriptsOnlyBuild:
     className: RectMask2D
   - hash:
       serializedVersion: 2
-      Hash: 31ab251bc65f83d0b672f03b4e5d70f7
+      Hash: f013514de6e80ffc13b75dd0b47584d2
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BattleSystem
@@ -476,7 +502,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 419089a6c74bc2144e6cb5afd5c55907
+      Hash: 4399ba1d0bd91f57a5028d4e8d4eb423
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Unit
@@ -500,7 +526,7 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
-      Hash: 72663b98a6a5c483af20850a7485c1b2
+      Hash: 2c027502c0b31ef622677e8527ccb541
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: StoryOpen
@@ -560,6 +586,12 @@ ScriptsOnlyBuild:
     className: RawImage
   - hash:
       serializedVersion: 2
+      Hash: 1dc7e8425c82f2680dc00f4635de46dc
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ItemManager
+  - hash:
+      serializedVersion: 2
       Hash: 8173abd8640bf3cd88059156affe189b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
@@ -614,6 +646,12 @@ ScriptsOnlyBuild:
     className: Physics2DRaycaster
   - hash:
       serializedVersion: 2
+      Hash: ac1bcc038419189e88b7c5b9b87afddb
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ItemUnit
+  - hash:
+      serializedVersion: 2
       Hash: c1933cc0a2f4ff6eb13333347497beb3
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -666,6 +704,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_StyleSheet
+  - hash:
+      serializedVersion: 2
+      Hash: 4df7eaec112dbf18768c7df2d893482a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SkillUnit
   - hash:
       serializedVersion: 2
       Hash: 21d73eda81c18eacd2c91ad5dfaf2e32

@@ -22,6 +22,7 @@ public class GameMenu : MonoBehaviour
     {
         aud.clip = MenuBGM;
         aud.Play();
+        aud.volume = 0.2f;
         Screen.SetResolution(1280, 720, false);
         pig.position = T;
         for (int k = 0; k <= 3; k++)

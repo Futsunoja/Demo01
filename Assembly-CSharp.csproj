@@ -74,6 +74,7 @@
     <Compile Include="Assets\Script\SkillUnit.cs" />
     <Compile Include="Assets\Script\SoundManager.cs" />
     <Compile Include="Assets\Script\StoryOpen.cs" />
+    <Compile Include="Assets\Script\StrengthenCtrl.cs" />
     <Compile Include="Assets\Script\TEST.cs" />
     <Compile Include="Assets\Script\TalkOpen.cs" />
     <Compile Include="Assets\Script\TalkOpenCetral.cs" />

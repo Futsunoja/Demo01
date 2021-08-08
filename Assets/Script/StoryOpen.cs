@@ -42,12 +42,8 @@ public class StoryOpen : MonoBehaviour
         data.SkillNumber = new int[] { 0, 1, 2, 3 };
         data.curryExp = 0;
         data.ItemMax = 15;
-        data.ItemNumber = new int[] { 0, 1, 2, 3 };
-        data.ItemQuantity = new int[50];
-        data.RedPoison = 5;
-        data.BluePoison = 5;
-        data.BuffPoison = 3;
-        data.UndebuffPoison = 2;
+        data.ItemNumber = new int[4];
+        data.ItemQuantity = new int[150];
         data.HeadwearLevel = 1;
         data.SwordLevel = 1;
         data.ShieldLevel = 1;
@@ -59,6 +55,14 @@ public class StoryOpen : MonoBehaviour
         data.OnTheMountainOpen = false;
         data.GoddessStatueOpen = false;
 
+        data.ItemNumber[0] = 2;
+        data.ItemNumber[1] = 6;
+        data.ItemNumber[2] = 14;
+        data.ItemNumber[3] = 16;
+        data.ItemQuantity[2] = 5;
+        data.ItemQuantity[6] = 5;
+        data.ItemQuantity[14] = 3;
+        data.ItemQuantity[16] = 2;
         PlayerPrefs.SetString("Playerdata", JsonUtility.ToJson(data));    //存取新資料
         #endregion
 
@@ -575,10 +579,6 @@ public class StoryOpen : MonoBehaviour
         public int ItemMax;
         public int[] ItemNumber;
         public int[] ItemQuantity;
-        public int RedPoison;
-        public int BluePoison;
-        public int BuffPoison;
-        public int UndebuffPoison;
         public int HeadwearLevel;
         public int SwordLevel;
         public int ShieldLevel;

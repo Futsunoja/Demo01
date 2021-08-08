@@ -2,12 +2,19 @@
 
 public class ItemUnit : MonoBehaviour
 {
+    /// <summary>
+    /// 戰鬥用
+    /// </summary>
     public Sprite ItemSprite;
     public string ItemName;
-    public float RestoreHP;
-    public int RestoreSP;
-    public int IncreaseATK;
-    public int IncreaseDEF;
-    public int IncreaseSPD;
     public string ItemIntro;
+
+    /// <summary>
+    /// 大地圖用
+    /// </summary>
+    public Sprite MapItemSprite;
+    public Sprite ShowItem;
+    public string MapItemName;
+    public string ItemType;
+    public string ItemEffect;
 }

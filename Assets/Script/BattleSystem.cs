@@ -25,6 +25,7 @@ public class BattleSystem : MonoBehaviour
     public GameObject BattleMessage;
     public GameObject SkillItemName;
     public GameObject SkillItemEffect;
+    public GameObject ItemQuantity;
     public GameObject[] SkillPower;
     public GameObject BattleSettlement, WonSettlement, LoseSettlement, ExeSettlement, ExeLine;
     public GameObject AbilitySettlement, OldLevel, OldAtk, OldDef, OldSpd, NewLevel, NewAtk, NewDef, NewSpd, NewLevelMask, NewAtkMask, NewDefMask, NewSpdMask, ReStart, LevelUp;
@@ -34,10 +35,15 @@ public class BattleSystem : MonoBehaviour
     public Transform enemyBattleStation;
 
     SkillUnit skillUnit1, skillUnit2, skillUnit3, skillUnit4;
-    ItemUnit itemUnit1, itemUnit2, itemUnit3, itemUnit4;
+    public ItemManager itemManager;
     Unit enemyUnit;
     int EnemyNumber;
     int EnemyHit;
+
+    bool DragonPower, DragonEndBreath;    //龍之力判定
+    int DragonEnchantment;    //龍之結界判定
+    int PlayerFireCount;    //玩家燃燒回合數
+    bool PlayerAllDown;    //玩家能力值全下降
 
     public Text enemyName, enemyHp, playerHp;    //開始介面文字資訊
     public Text Won, getExe, Exe;    //勝利介面文字資訊
@@ -47,7 +53,8 @@ public class BattleSystem : MonoBehaviour
     int PlayerOriDef;    //原防禦力
     int PlayerOriSpd;    //原速度
     int PlayerOriExe;    //原經驗值
-    int UPcount;         //強化倒數
+    int SkillUPcount;    //強化倒數
+    int SkillUPtime;     //強化次數
     int POISONcount;     //毒倒數
     int POISONdamage;    //毒傷害
     bool EnemyIsDead;    //是否死亡
@@ -63,6 +70,7 @@ public class BattleSystem : MonoBehaviour
 
         audBattle.clip = BattleBGM;
         audBattle.Play();
+        audBattle.volume = 0.2f;
         Screen.SetResolution(1280, 720, false);    //固定視窗大小
 
         c1.transform.localPosition = c;
@@ -72,36 +80,31 @@ public class BattleSystem : MonoBehaviour
 
         Instantiate(playerPrefab, playerBattleStation);
 
+        MeetEnemy();
+        GameObject enemyGo = Instantiate(enemyPrefab[EnemyNumber], enemyBattleStation);
+        enemyUnit = enemyGo.GetComponent<Unit>();
+
         skillUnit1 = gameObject.GetComponent<SkillManager>().skillPrefab[data.SkillNumber[0]].GetComponent<SkillUnit>();
         skillUnit2 = gameObject.GetComponent<SkillManager>().skillPrefab[data.SkillNumber[1]].GetComponent<SkillUnit>();
         skillUnit3 = gameObject.GetComponent<SkillManager>().skillPrefab[data.SkillNumber[2]].GetComponent<SkillUnit>();
         skillUnit4 = gameObject.GetComponent<SkillManager>().skillPrefab[data.SkillNumber[3]].GetComponent<SkillUnit>();
-
-        itemUnit1 = gameObject.GetComponent<ItemManager>().ItemPrefab[data.ItemNumber[0]].GetComponent<ItemUnit>();
-        itemUnit2 = gameObject.GetComponent<ItemManager>().ItemPrefab[data.ItemNumber[1]].GetComponent<ItemUnit>();
-        itemUnit3 = gameObject.GetComponent<ItemManager>().ItemPrefab[data.ItemNumber[2]].GetComponent<ItemUnit>();
-        itemUnit4 = gameObject.GetComponent<ItemManager>().ItemPrefab[data.ItemNumber[3]].GetComponent<ItemUnit>();
 
         spr21 = skillUnit1.SkillSprite;
         spr22 = skillUnit2.SkillSprite;
         spr23 = skillUnit3.SkillSprite;
         spr24 = skillUnit4.SkillSprite;
 
-        spr31 = itemUnit1.ItemSprite;
-        spr32 = itemUnit2.ItemSprite;
-        spr33 = itemUnit3.ItemSprite;
-        spr34 = itemUnit4.ItemSprite;
-
-        MeetEnemy();
-        GameObject enemyGo = Instantiate(enemyPrefab[EnemyNumber], enemyBattleStation);
-        enemyUnit = enemyGo.GetComponent<Unit>();
+        spr31 = itemManager.BattleItemSprite[data.ItemNumber[0]];
+        spr32 = itemManager.BattleItemSprite[data.ItemNumber[1]];
+        spr33 = itemManager.BattleItemSprite[data.ItemNumber[2]];
+        spr34 = itemManager.BattleItemSprite[data.ItemNumber[3]];
 
         playerOriLevel = data.unitLevel;
         PlayerOriAtk = data.atk;
         PlayerOriDef = data.def;
         PlayerOriSpd = data.speed;
         PlayerOriExe = data.curryExp;
-        UPcount = 0;
+        SkillUPcount = 0;
         POISONcount = 0;
 
         state = Battletest.START;
@@ -204,7 +207,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    void CT()    //基本選項操作（WASD上下左右；J確定；K取消）
+    void CT()    //基本選項操作（WS上下；J確定；K取消）
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -324,29 +327,41 @@ public class BattleSystem : MonoBehaviour
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = itemUnit1.ItemName + "擁有" + data.RedPoison + "個";
-                SkillItemEffect.GetComponent<Text>().text = "" + itemUnit1.ItemIntro;
+                ItemQuantity.SetActive(true);
+                SkillItemName.GetComponent<Text>().text = "【" + spr31.name + "】";
+                ItemQuantity.GetComponent<Text>().text = "擁有" + data.ItemQuantity[data.ItemNumber[0]] + "個";
+                itemManager.Item(spr31.name);
+                SkillItemEffect.GetComponent<Text>().text = itemManager.ItemIntro;
             }
             if (c2.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = itemUnit2.ItemName + "擁有" + data.BluePoison + "個";
-                SkillItemEffect.GetComponent<Text>().text = "" + itemUnit2.ItemIntro;
+                ItemQuantity.SetActive(true);
+                SkillItemName.GetComponent<Text>().text = "【" + spr32.name + "】";
+                ItemQuantity.GetComponent<Text>().text = "擁有" + data.ItemQuantity[data.ItemNumber[1]] + "個";
+                itemManager.Item(spr32.name);
+                SkillItemEffect.GetComponent<Text>().text = itemManager.ItemIntro;
             }
             if (c3.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = itemUnit3.ItemName + "擁有" + data.BuffPoison + "個";
-                SkillItemEffect.GetComponent<Text>().text = "" + itemUnit3.ItemIntro;
+                ItemQuantity.SetActive(true);
+                SkillItemName.GetComponent<Text>().text = "【" + spr33.name + "】";
+                ItemQuantity.GetComponent<Text>().text = "擁有" + data.ItemQuantity[data.ItemNumber[2]] + "個";
+                itemManager.Item(spr33.name);
+                SkillItemEffect.GetComponent<Text>().text = itemManager.ItemIntro;
             }
             if (c4.transform.localPosition == o)
             {
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
-                SkillItemName.GetComponent<Text>().text = itemUnit4.ItemName + "擁有" + data.UndebuffPoison + "個";
-                SkillItemEffect.GetComponent<Text>().text = "" + itemUnit4.ItemIntro;
+                ItemQuantity.SetActive(true);
+                SkillItemName.GetComponent<Text>().text = "【" + spr34.name + "】"; 
+                ItemQuantity.GetComponent<Text>().text = "擁有" + data.ItemQuantity[data.ItemNumber[3]] + "個";
+                itemManager.Item(spr34.name);
+                SkillItemEffect.GetComponent<Text>().text = itemManager.ItemIntro;
             }
         }
     }
@@ -516,57 +531,61 @@ public class BattleSystem : MonoBehaviour
                 {
                     i6 = true;
                     state = Battletest.PLAYERTURN;
-                    if (c1.transform.localPosition == o && data.RedPoison > 0)
+                    if (c1.transform.localPosition == o && data.ItemQuantity[data.ItemNumber[0]] > 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(Item(c1.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
+                        ItemQuantity.SetActive(false);
                         i0 = true;
                     }
-                    else if (c1.transform.localPosition == o && data.RedPoison <= 0)
+                    else if (c1.transform.localPosition == o && data.ItemQuantity[data.ItemNumber[0]] <= 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
-                    if (c2.transform.localPosition == o && data.BluePoison > 0)
+                    if (c2.transform.localPosition == o && data.ItemQuantity[data.ItemNumber[1]] > 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(Item(c2.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
+                        ItemQuantity.SetActive(false);
                         i0 = true;
                     }
-                    else if (c2.transform.localPosition == o && data.BluePoison <= 0)
+                    else if (c2.transform.localPosition == o && data.ItemQuantity[data.ItemNumber[1]] <= 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
-                    if (c3.transform.localPosition == o && data.BuffPoison > 0)
+                    if (c3.transform.localPosition == o && data.ItemQuantity[data.ItemNumber[2]] > 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(Item(c3.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
+                        ItemQuantity.SetActive(false);
                         i0 = true;
                     }
-                    else if (c3.transform.localPosition == o && data.BuffPoison <= 0)
+                    else if (c3.transform.localPosition == o && data.ItemQuantity[data.ItemNumber[2]] <= 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
-                    if (c4.transform.localPosition == o && data.UndebuffPoison > 0)
+                    if (c4.transform.localPosition == o && data.ItemQuantity[data.ItemNumber[3]] > 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(Item(c4.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
+                        ItemQuantity.SetActive(false);
                         i0 = true;
                     }
-                    else if (c4.transform.localPosition == o && data.UndebuffPoison <= 0)
+                    else if (c4.transform.localPosition == o && data.ItemQuantity[data.ItemNumber[3]] <= 0)
                     {
                         SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
@@ -585,6 +604,7 @@ public class BattleSystem : MonoBehaviour
                     SoundManager.SoundInstance.SoundHitCancel();
                     SkillItemName.SetActive(false);
                     SkillItemEffect.SetActive(false);
+                    ItemQuantity.SetActive(false);
                     ispr2 = false;
                     ispr3 = false;
                     ispr1 = true;
@@ -762,46 +782,289 @@ public class BattleSystem : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        EnemyAttack();
-
-        if (EnemyHit <= 0)
+        //EnemyAttack();
+        if (enemyUnit.unitName == "巨龍")
         {
-            EnemyHit = 0;
-        }
-        bool isDead;
-        data.currentHp -= EnemyHit;
-        if (data.currentHp <= 0)
-        {
-            isDead = true;
-        }
-        else
-        {
-            isDead = false;
-        }
-
-        PlayerDamageHpSettle();
-
-        yield return new WaitForSeconds(1f);
-        BattleMessage.GetComponent<Text>().text = data.unitName + "受到了" + EnemyHit + "點傷害";
-
-        if (isDead == true)
-        {
-            yield return new WaitForSeconds(1f);
-            BattleMessage.GetComponent<Text>().text = data.unitName + "倒下了";
-            state = Battletest.LOST;
-            StartCoroutine(EndBattle());
-        }
-        else
-        {
-            if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
+            BattleMessage.SetActive(true);
+            if (enemyUnit.currentHp <= enemyUnit.maxHp * 0.8f && DragonPower == false)
             {
-                state = Battletest.ENDTRUN;
-                StartCoroutine(EndTrun());
+                SoundManager.SoundInstance.SoundBuff();
+                BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了龍之力";
+                enemyUnit.atk += 25;
+                enemyUnit.def += 20;
+                DragonPower = true;
+                yield return new WaitForSeconds(1f);
+                BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "的攻擊、防禦超大幅提升";
+                if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
+                {
+                    state = Battletest.ENDTRUN;
+                    StartCoroutine(EndTrun());
+                }
+                else
+                {
+                    state = Battletest.PLAYERTURN;
+                    StartCoroutine(AttackSkill(playerSKILLNAME));
+                }
+                
+            }
+            else if (enemyUnit.currentHp <= enemyUnit.maxHp * 0.4f && DragonEnchantment == 0)
+            {
+                enemyUnit.def += 10;
+                DragonEnchantment += 1;
+                BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "展開了龍結界";
+                if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
+                {
+                    state = Battletest.ENDTRUN;
+                    StartCoroutine(EndTrun());
+                }
+                else
+                {
+                    state = Battletest.PLAYERTURN;
+                    StartCoroutine(AttackSkill(playerSKILLNAME));
+                }
+            }
+            else if (enemyUnit.currentHp <= enemyUnit.maxHp * 0.1f && DragonEndBreath == false)
+            {
+                BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了終焉龍息";
+                SoundManager.SoundInstance.SoundEnemyAttack();
+                EnemyHit = Mathf.CeilToInt(data.maxHp * 0.8f);
+                DragonEndBreath = true;
+
+                #region 傷害結算與死亡判定
+                if (EnemyHit <= 0)
+                {
+                    EnemyHit = 0;
+                }
+                bool isDead;
+                data.currentHp -= EnemyHit;
+                if (data.currentHp <= 0)
+                {
+                    isDead = true;
+                }
+                else
+                {
+                    isDead = false;
+                }
+
+                PlayerDamageHpSettle();
+
+                yield return new WaitForSeconds(1f);
+                BattleMessage.GetComponent<Text>().text = data.unitName + "受到了" + EnemyHit + "點傷害";
+
+                if (isDead == true)
+                {
+                    yield return new WaitForSeconds(1f);
+                    BattleMessage.GetComponent<Text>().text = data.unitName + "倒下了";
+                    state = Battletest.LOST;
+                    StartCoroutine(EndBattle());
+                }
+                else
+                {
+                    if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
+                    {
+                        state = Battletest.ENDTRUN;
+                        StartCoroutine(EndTrun());
+                    }
+                    else
+                    {
+                        state = Battletest.PLAYERTURN;
+                        StartCoroutine(AttackSkill(playerSKILLNAME));
+                    }
+                }
+                #endregion
             }
             else
             {
-                state = Battletest.PLAYERTURN;
-                StartCoroutine(AttackSkill(playerSKILLNAME));
+                int a = 4;
+                int b = 7;
+                int i = Random.Range(0, 10);
+                if (i >= 0 && i < a)    //龍息
+                {
+                    BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了龍息";
+                    EnemyHit = Mathf.CeilToInt(enemyUnit.atk * 1.3f - data.def);
+                    yield return new WaitForSeconds(1f);
+
+                    #region 傷害結算與死亡判定
+                    if (EnemyHit <= 0)
+                    {
+                        EnemyHit = 0;
+                    }
+                    bool isDead;
+                    data.currentHp -= EnemyHit;
+                    if (data.currentHp <= 0)
+                    {
+                        isDead = true;
+                    }
+                    else
+                    {
+                        isDead = false;
+                    }
+
+                    PlayerDamageHpSettle();
+
+                    yield return new WaitForSeconds(1f);
+                    BattleMessage.GetComponent<Text>().text = data.unitName + "受到了" + EnemyHit + "點傷害";
+
+                    if (isDead == true)
+                    {
+                        yield return new WaitForSeconds(1f);
+                        BattleMessage.GetComponent<Text>().text = data.unitName + "倒下了";
+                        state = Battletest.LOST;
+                        StartCoroutine(EndBattle());
+                    }
+                    else
+                    {
+                        int fire = Random.Range(0, 10);
+                        if (fire >= 0 && fire <= 4 && PlayerFireCount == 0)
+                        {
+                            yield return new WaitForSeconds(1f);
+                            PlayerFireCount = 3;
+                            BattleMessage.GetComponent<Text>().text = data.unitName + "受到了灼傷";
+                        }
+                        if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
+                        {
+                            state = Battletest.ENDTRUN;
+                            StartCoroutine(EndTrun());
+                        }
+                        else
+                        {
+                            state = Battletest.PLAYERTURN;
+                            StartCoroutine(AttackSkill(playerSKILLNAME));
+                        }
+                    }
+                    #endregion
+
+                }
+                else if (i >= a && i < b)    //龍吼
+                {
+                    if (data.atk > PlayerOriAtk || data.def > PlayerOriDef || data.speed > PlayerOriSpd)
+                    {
+                        BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了龍吼";
+                        if (data.atk > PlayerOriAtk)
+                        {
+                            data.atk = PlayerOriAtk;
+                        }
+                        if (data.def > PlayerOriDef)
+                        {
+                            data.def = PlayerOriDef;
+                        }
+                        if (data.speed > PlayerOriSpd)
+                        {
+                            data.speed = PlayerOriSpd;
+                        }
+                        SkillUPcount = 0;
+                        SkillUPtime = 0;
+                        yield return new WaitForSeconds(1f);
+                        BattleMessage.GetComponent<Text>().text = data.unitName + "的增益狀態解除了";
+                        if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
+                        {
+                            state = Battletest.ENDTRUN;
+                            StartCoroutine(EndTrun());
+                        }
+                        else
+                        {
+                            state = Battletest.PLAYERTURN;
+                            StartCoroutine(AttackSkill(playerSKILLNAME));
+                        }
+                    }
+                    else
+                    {
+                        BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了攻擊";
+                        SoundManager.SoundInstance.SoundEnemyAttack();
+                        EnemyHit = enemyUnit.atk - data.def;
+                        #region 傷害結算與死亡判定
+                        if (EnemyHit <= 0)
+                        {
+                            EnemyHit = 0;
+                        }
+                        bool isDead;
+                        data.currentHp -= EnemyHit;
+                        if (data.currentHp <= 0)
+                        {
+                            isDead = true;
+                        }
+                        else
+                        {
+                            isDead = false;
+                        }
+
+                        PlayerDamageHpSettle();
+
+                        yield return new WaitForSeconds(1f);
+                        BattleMessage.GetComponent<Text>().text = data.unitName + "受到了" + EnemyHit + "點傷害";
+
+                        if (isDead == true)
+                        {
+                            yield return new WaitForSeconds(1f);
+                            BattleMessage.GetComponent<Text>().text = data.unitName + "倒下了";
+                            state = Battletest.LOST;
+                            StartCoroutine(EndBattle());
+                        }
+                        else
+                        {
+                            if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
+                            {
+                                state = Battletest.ENDTRUN;
+                                StartCoroutine(EndTrun());
+                            }
+                            else
+                            {
+                                state = Battletest.PLAYERTURN;
+                                StartCoroutine(AttackSkill(playerSKILLNAME));
+                            }
+                        }
+                        #endregion
+                    }
+                }
+                else
+                {
+                    BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了攻擊";
+                    SoundManager.SoundInstance.SoundEnemyAttack();
+                    EnemyHit = enemyUnit.atk - data.def;
+                    #region 傷害結算與死亡判定
+                    if (EnemyHit <= 0)
+                    {
+                        EnemyHit = 0;
+                    }
+                    bool isDead;
+                    data.currentHp -= EnemyHit;
+                    if (data.currentHp <= 0)
+                    {
+                        isDead = true;
+                    }
+                    else
+                    {
+                        isDead = false;
+                    }
+
+                    PlayerDamageHpSettle();
+
+                    yield return new WaitForSeconds(1f);
+                    BattleMessage.GetComponent<Text>().text = data.unitName + "受到了" + EnemyHit + "點傷害";
+
+                    if (isDead == true)
+                    {
+                        yield return new WaitForSeconds(1f);
+                        BattleMessage.GetComponent<Text>().text = data.unitName + "倒下了";
+                        state = Battletest.LOST;
+                        StartCoroutine(EndBattle());
+                    }
+                    else
+                    {
+                        if (data.speed >= enemyUnit.speed || playerSKILLNAME == null)
+                        {
+                            state = Battletest.ENDTRUN;
+                            StartCoroutine(EndTrun());
+                        }
+                        else
+                        {
+                            state = Battletest.PLAYERTURN;
+                            StartCoroutine(AttackSkill(playerSKILLNAME));
+                        }
+                    }
+                    #endregion
+                }
+
             }
         }
     }
@@ -822,6 +1085,7 @@ public class BattleSystem : MonoBehaviour
     {
         if (enemyUnit.unitName == "巨龍")
         {
+            print("遭遇巨龍");
             BattleMessage.SetActive(true);
             BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了攻擊";
             SoundManager.SoundInstance.SoundEnemyAttack();
@@ -883,12 +1147,26 @@ public class BattleSystem : MonoBehaviour
             SoundManager.SoundInstance.SoundBuff();
             SkillPowerExpend(1);
 
-            data.atk += 15;
-            data.def += 10;
-            UPcount = 3;
-
-            yield return new WaitForSeconds(1f);
-            BattleMessage.GetComponent<Text>().text = data.unitName + "的攻擊、防禦大幅提升";
+            if (SkillUPtime < 3)
+            {
+                data.atk += 15;
+                data.def += 10;
+                SkillUPcount = 4;
+                SkillUPtime += 1;
+                yield return new WaitForSeconds(1f);
+                BattleMessage.GetComponent<Text>().text = data.unitName + "的攻擊、防禦大幅提升";
+                if (SkillUPtime == 3)
+                {
+                    yield return new WaitForSeconds(1f);
+                    BattleMessage.GetComponent<Text>().text = data.unitName + "強化次數已達最大值";
+                }
+            }
+            else if (SkillUPtime == 3)
+            {
+                yield return new WaitForSeconds(1f);
+                BattleMessage.GetComponent<Text>().text = data.unitName + "強化次數已達最大值";
+            }
+            
 
             if (data.speed >= enemyUnit.speed)
             {
@@ -937,7 +1215,7 @@ public class BattleSystem : MonoBehaviour
             SkillPowerExpend(3);
 
             float hit;
-            if(data.currentHp/data.maxHp<=1 && data.currentHp / data.maxHp > 0.66)
+            if (data.currentHp / data.maxHp <= 1 && data.currentHp / data.maxHp > 0.66)
             {
                 hit = data.atk * 2.3f - enemyUnit.def;
                 hit = Mathf.Clamp(hit, 0, data.atk * 2.3f);
@@ -969,7 +1247,7 @@ public class BattleSystem : MonoBehaviour
             }
             else if (data.currentHp / data.maxHp <= 0.1 && data.currentHp / data.maxHp > 0)
             {
-                hit = data.atk * 4f - enemyUnit.def;
+                hit = data.atk * 3.5f - enemyUnit.def;
                 hit = Mathf.Clamp(hit, 0, data.atk * 4f);
                 EnemyIsDead = enemyUnit.TakeDamage((int)hit);
                 EnemyDamageHpSettle();
@@ -1007,7 +1285,7 @@ public class BattleSystem : MonoBehaviour
         #region 01_紅藥水
         if (ITEMNAME == "高級紅藥水")
         {
-            data.RedPoison -= 1;
+            data.ItemQuantity[2] -= 1;
 
             float RestoreHP = Mathf.Round(data.maxHp * 0.6f);
             data.currentHp += RestoreHP;
@@ -1017,55 +1295,49 @@ public class BattleSystem : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = data.unitName + "恢復了" + RestoreHP + "點血量";
-
-            StartCoroutine(EnemyTrun(null));
         }
         #endregion
 
         #region 02_藍藥水
         if (ITEMNAME == "高級藍藥水")
         {
-            data.BluePoison -= 1;
+            data.ItemQuantity[6] -= 1;
 
             SkillPowerExpend(-3);
 
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = data.unitName + "恢復了" + 3 + "點能量";
-
-            StartCoroutine(EnemyTrun(null));
         }
         #endregion
 
         #region 03_秘藥
         if (ITEMNAME == "高級秘藥")
         {
-            data.BuffPoison -= 1;
+            data.ItemQuantity[14] -= 1;
 
             data.atk += 15;
             data.def += 10;
-            UPcount = 3;
+            SkillUPcount = 3;
 
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = data.unitName + "的攻擊力、防禦力與速度大幅提升";
-
-            state = Battletest.ENEMYTURN;
-            StartCoroutine(EnemyTrun(null));
         }
         #endregion
 
         #region 04_萬能草
         if (ITEMNAME == "萬能草")
         {
-            data.UndebuffPoison -= 1;
+            data.ItemQuantity[16] -= 1;
 
             yield return new WaitForSeconds(1f);
             SoundManager.SoundInstance.SoundBuff();
-            BattleMessage.GetComponent<Text>().text = data.unitName + "的負面狀態消失了";
-
-            state = Battletest.ENEMYTURN;
-            StartCoroutine(EnemyTrun(null));
+            PlayerFireCount = 0;
+            BattleMessage.GetComponent<Text>().text = data.unitName + "的異常狀態消失了";
         }
         #endregion
+
+        state = Battletest.ENEMYTURN;
+        StartCoroutine(EnemyTrun(null));
     }
 
     IEnumerator Run()    //玩家逃跑
@@ -1081,18 +1353,63 @@ public class BattleSystem : MonoBehaviour
 
     IEnumerator EndTrun()    //此回合結束
     {
-        #region 強化倒數
-        if (UPcount > 0)
+        #region 勇者燃燒傷害倒數
+        if (PlayerFireCount > 0)
         {
-            UPcount--;
-        }
-        else if (UPcount == 0)
-        {
-            data.atk = PlayerOriAtk;
-            data.def = PlayerOriDef;
+            yield return new WaitForSeconds(1f);
+            EnemyHit = Mathf.CeilToInt(data.maxHp * 0.1f);
+            data.currentHp -= EnemyHit;
+            PlayerFireCount -= 1;
+
+            #region 傷害結算與死亡判定
+            bool isDead;
+            if (data.currentHp <= 0)
+            {
+                isDead = true;
+            }
+            else
+            {
+                isDead = false;
+            }
+
+            PlayerDamageHpSettle();
+
+            yield return new WaitForSeconds(1f);
+            BattleMessage.GetComponent<Text>().text = data.unitName + "受到了" + EnemyHit + "點的灼傷";
+
+            if (isDead == true)
+            {
+                yield return new WaitForSeconds(1f);
+                BattleMessage.GetComponent<Text>().text = data.unitName + "倒下了";
+                state = Battletest.LOST;
+                StartCoroutine(EndBattle());
+            }
+            else
+            {
+                if (PlayerFireCount == 0)
+                {
+                    yield return new WaitForSeconds(1f);
+                    BattleMessage.GetComponent<Text>().text = data.unitName + "的灼傷解除了";
+                }
+            }
+            #endregion
         }
         #endregion
-        #region 中毒傷害與倒數
+        #region 勇者強化倒數
+        if (SkillUPcount > 0)
+        {
+            SkillUPcount--;
+            if (SkillUPcount == 0)
+            {
+                data.atk = PlayerOriAtk;
+                data.def = PlayerOriDef;
+                SkillUPtime = 0;
+                yield return new WaitForSeconds(1f);
+                BattleMessage.GetComponent<Text>().text = data.unitName + "的攻擊、防禦回復了";
+            }
+        }
+        #endregion
+        #region 敵人中毒傷害與倒數
         if (POISONcount > 0)
         {
             yield return new WaitForSeconds(1f);
@@ -1108,7 +1425,7 @@ public class BattleSystem : MonoBehaviour
                 yield return new WaitForSeconds(1f);
                 BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "倒下了";
                 state = Battletest.WON;
-                EndBattle();
+                StartCoroutine(EndBattle());
             }
             else
             {
@@ -1130,11 +1447,14 @@ public class BattleSystem : MonoBehaviour
                 enemyUnit.Self.GetComponent<SpriteRenderer>().sprite = enemyUnit.nico;
             }
             BattleMessage.GetComponent<Text>().text = "拋瓦的型態改變了";
-            yield return new WaitForSeconds(1f);
         }
         #endregion
-        ReSet();
-        state = Battletest.CHOOSEACTION;
+        yield return new WaitForSeconds(1f);
+        if (data.currentHp > 0)
+        {
+            ReSet();
+            state = Battletest.CHOOSEACTION;
+        }
     }
 
     IEnumerator EndBattle()    //戰鬥結束
@@ -1438,11 +1758,11 @@ public class BattleSystem : MonoBehaviour
         {
             c1.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
-        else if (c1spr.sprite == spr31 && data.RedPoison != 0)
+        else if (c1spr.sprite == spr31 && data.ItemQuantity[data.ItemNumber[0]] != 0)
         {
             c1.GetComponent<SpriteRenderer>().color = Color.white;
         }
-        else if (c1spr.sprite == spr31 && data.RedPoison == 0)
+        else if (c1spr.sprite == spr31 && data.ItemQuantity[data.ItemNumber[0]] == 0)
         {
             c1.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
@@ -1459,11 +1779,11 @@ public class BattleSystem : MonoBehaviour
         {
             c2.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
-        else if (c2spr.sprite == spr32 && data.BluePoison != 0)
+        else if (c2spr.sprite == spr32 && data.ItemQuantity[data.ItemNumber[1]] != 0)
         {
             c2.GetComponent<SpriteRenderer>().color = Color.white;
         }
-        else if (c2spr.sprite == spr32 && data.BluePoison == 0)
+        else if (c2spr.sprite == spr32 && data.ItemQuantity[data.ItemNumber[1]] == 0)
         {
             c2.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
@@ -1480,11 +1800,11 @@ public class BattleSystem : MonoBehaviour
         {
             c3.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
-        else if (c3spr.sprite == spr33 && data.BuffPoison != 0)
+        else if (c3spr.sprite == spr33 && data.ItemQuantity[data.ItemNumber[2]] != 0)
         {
             c3.GetComponent<SpriteRenderer>().color = Color.white;
         }
-        else if (c3spr.sprite == spr33 && data.BuffPoison == 0)
+        else if (c3spr.sprite == spr33 && data.ItemQuantity[data.ItemNumber[2]] == 0)
         {
             c3.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
@@ -1505,11 +1825,11 @@ public class BattleSystem : MonoBehaviour
         {
             c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
-        else if (c4spr.sprite == spr34 && data.UndebuffPoison != 0)
+        else if (c4spr.sprite == spr34 && data.ItemQuantity[data.ItemNumber[3]] != 0)
         {
             c4.GetComponent<SpriteRenderer>().color = Color.white;
         }
-        else if (c4spr.sprite == spr34 && data.UndebuffPoison == 0)
+        else if (c4spr.sprite == spr34 && data.ItemQuantity[data.ItemNumber[3]] == 0)
         {
             c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
@@ -1533,10 +1853,6 @@ public class BattleSystem : MonoBehaviour
         public int ItemMax;
         public int[] ItemNumber;
         public int[] ItemQuantity;
-        public int RedPoison;
-        public int BluePoison;
-        public int BuffPoison;
-        public int UndebuffPoison;
         public int HeadwearLevel;
         public int SwordLevel;
         public int ShieldLevel;

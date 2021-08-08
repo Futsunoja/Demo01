@@ -3,7 +3,11 @@ guid: d7a6f8b48924f454aa40f6d143407eac
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - pig: {instanceID: 0}
+  - aud: {instanceID: 0}
+  - MenuBGM: {instanceID: 0}
+  - Hit: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

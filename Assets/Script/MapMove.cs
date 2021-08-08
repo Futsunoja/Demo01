@@ -13,7 +13,9 @@ public class MapMove : MonoBehaviour
     public GameObject[] pla;
     public GameObject[] tintro;
     public GameObject place, intro;
-    public GameObject MapMenu, Girl, talk, go, tra, forg, sav, loa, backmenu;
+    public GameObject MapMenu, Girl, talk;
+    public GameObject[] MapMenuOption;
+    public int MapMenuOptionNumber;
     public GameObject Save1, Save2, Load1, Load2, Load3;
     public bool SaveRun, LoadRun;
     public GameObject[] cannotuse;
@@ -28,6 +30,26 @@ public class MapMove : MonoBehaviour
     public GameObject StrengthenChoose;
     public GameObject[] Equipment;
     public GameObject[] EquipmentShow;
+
+    public GameObject Backpack;
+    bool OpenBackpack;
+    public GameObject BackpackChoose;
+    public int BackpackChooseNum;
+    public GameObject[] ItemField;
+    public int ItemFieldNum;
+    public Sprite[] ItemFieldSprite;
+    //public GameObject[] ItemBar;
+    public GameObject[] ItemBarSprite;
+    public ItemManager ItemManager;
+    public bool[] ItemFieldOpen = new bool[4];
+    public Text itemPageShow;
+    int[] itemPage = new int[2];
+    int[] itemPageBreakpoint = new int[10];    //輔助紀錄分段編號
+    public int[] ItemPotionNumber = new int[150];
+    public int[] ItemMaterialNumber = new int[150];
+    public int[] ItemTaskNumber = new int[150];
+    public GameObject ItemIntroShow;
+    public Text[] ItemIntro;
 
     public GameObject Meet;
     public GameObject FirstPlayer, FirstGirl;
@@ -56,6 +78,15 @@ public class MapMove : MonoBehaviour
 
         audMap.clip = MapBGM;    //設定BGM
         audMap.Play();
+        audMap.volume = 0.2f;
+        Screen.SetResolution(1280, 720, false);
+
+        for (int i = 0; i < 18; i++)
+        {
+            ItemBarSprite[i].SetActive(true);
+            ItemBarSprite[i].GetComponent<Image>().color = new Color(1, 1, 1, 0);
+        }
+        ItemIntroShow.SetActive(false);
 
         #region 讀取玩家存檔，建立初始畫面
         transform.position = map[data.mapNumber].transform.position;                           //初始畫面，玩家位置
@@ -64,7 +95,8 @@ public class MapMove : MonoBehaviour
         pla[0].SetActive(true);                                                                //初始畫面，指標朝左
         pla[1].SetActive(false);
         m = true;                                                                              //初始畫面，小女孩介面打開
-        go.GetComponent<Image>().color = Color.green;                                          //初始預設選擇前進
+        MapMenuOptionNumber = 0;
+        MapMenuOption[MapMenuOptionNumber].GetComponent<Image>().color = Color.green;          //初始預設選擇前進
         CallLittleGirl.SetActive(false);                                                       //呼叫小女孩介面關閉
         #endregion
 
@@ -73,18 +105,17 @@ public class MapMove : MonoBehaviour
         step1 = true;
         Girl.transform.position = new Vector3(-130, 371, 0);
         talk.transform.localScale = Vector3.zero;
-        go.transform.localScale = Vector3.zero;
-        tra.transform.localScale = Vector3.zero;
-        forg.transform.localScale = Vector3.zero;
-        sav.transform.localScale = Vector3.zero;
-        loa.transform.localScale = Vector3.zero;
-        backmenu.transform.localScale = Vector3.zero;
+        for (int i = 0; i < 9; i++)
+        {
+            MapMenuOption[i].transform.localScale = Vector3.zero;
+        }
         Save1.SetActive(false);
         Save2.SetActive(false);
         Load1.SetActive(false);
         Load2.SetActive(false);
         Load3.SetActive(false);
         Strengthen.SetActive(false);
+        Backpack.SetActive(false);
         for(int show = 0; show <= 4; show++)
         {
             EquipmentShow[show].SetActive(false);
@@ -123,6 +154,7 @@ public class MapMove : MonoBehaviour
             menuAni();
             mapMenu();
             StrengthenCtrl();
+            BackpackCtrl();
         }
     }
 
@@ -771,115 +803,111 @@ public class MapMove : MonoBehaviour
 
     private void mapMenu()    //小女孩介面操作
     {
-        if (m == true && girlani == false && SaveRun == false && OpenStrengthen == false)
+        if (m == true && girlani == false && SaveRun == false && LoadRun == false && OpenStrengthen == false && OpenBackpack == false)
         {
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                if (go.GetComponent<Image>().color == Color.green)
-                {
-                    go.GetComponent<Image>().color = Color.white;
-                    forg.GetComponent<Image>().color = Color.green;
-                }
-                else if (forg.GetComponent<Image>().color == Color.green)
-                {
-                    forg.GetComponent<Image>().color = Color.white;
-                    tra.GetComponent<Image>().color = Color.green;
-                }
-                else if (tra.GetComponent<Image>().color == Color.green)
-                {
-                    tra.GetComponent<Image>().color = Color.white;
-                    go.GetComponent<Image>().color = Color.green;
-                }
-                else if (sav.GetComponent<Image>().color == Color.green)
-                {
-                    sav.GetComponent<Image>().color = Color.white;
-                    backmenu.GetComponent<Image>().color = Color.green;
-                }
-                else if (backmenu.GetComponent<Image>().color == Color.green)
-                {
-                    backmenu.GetComponent<Image>().color = Color.white;
-                    loa.GetComponent<Image>().color = Color.green;
-                }
-                else if (loa.GetComponent<Image>().color == Color.green)
-                {
-                    loa.GetComponent<Image>().color = Color.white;
-                    sav.GetComponent<Image>().color = Color.green;
-                }
-            }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                if (go.GetComponent<Image>().color == Color.green)
+                MapMenuOptionNumber += 3;
+                if (MapMenuOptionNumber > 8)
                 {
-                    go.GetComponent<Image>().color = Color.white;
-                    tra.GetComponent<Image>().color = Color.green;
+                    MapMenuOptionNumber -= 9;
                 }
-                else if (forg.GetComponent<Image>().color == Color.green)
+                for (int i = 0; i < 9; i++)
                 {
-                    forg.GetComponent<Image>().color = Color.white;
-                    go.GetComponent<Image>().color = Color.green;
+                    MapMenuOption[i].GetComponent<Image>().color = Color.white;
                 }
-                else if (tra.GetComponent<Image>().color == Color.green)
-                {
-                    tra.GetComponent<Image>().color = Color.white;
-                    forg.GetComponent<Image>().color = Color.green;
-                }
-                else if (sav.GetComponent<Image>().color == Color.green)
-                {
-                    sav.GetComponent<Image>().color = Color.white;
-                    loa.GetComponent<Image>().color = Color.green;
-                }
-                else if (backmenu.GetComponent<Image>().color == Color.green)
-                {
-                    backmenu.GetComponent<Image>().color = Color.white;
-                    sav.GetComponent<Image>().color = Color.green;
-                }
-                else if (loa.GetComponent<Image>().color == Color.green)
-                {
-                    loa.GetComponent<Image>().color = Color.white;
-                    backmenu.GetComponent<Image>().color = Color.green;
-                }
+                MapMenuOption[MapMenuOptionNumber].GetComponent<Image>().color = Color.green;
             }
-            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.W))
             {
-                if (go.GetComponent<Image>().color == Color.green)
+                MapMenuOptionNumber -= 3;
+                if (MapMenuOptionNumber < 0)
                 {
-                    go.GetComponent<Image>().color = Color.white;
-                    sav.GetComponent<Image>().color = Color.green;
+                    MapMenuOptionNumber += 9;
                 }
-                else if (forg.GetComponent<Image>().color == Color.green)
+                for (int i = 0; i < 9; i++)
                 {
-                    forg.GetComponent<Image>().color = Color.white;
-                    backmenu.GetComponent<Image>().color = Color.green;
+                    MapMenuOption[i].GetComponent<Image>().color = Color.white;
                 }
-                else if (tra.GetComponent<Image>().color == Color.green)
-                {
-                    tra.GetComponent<Image>().color = Color.white;
-                    loa.GetComponent<Image>().color = Color.green;
-                }
-                else if (sav.GetComponent<Image>().color == Color.green)
-                {
-                    sav.GetComponent<Image>().color = Color.white;
-                    go.GetComponent<Image>().color = Color.green;
-                }
-                else if (backmenu.GetComponent<Image>().color == Color.green)
-                {
-                    backmenu.GetComponent<Image>().color = Color.white;
-                    forg.GetComponent<Image>().color = Color.green;
-                }
-                else if (loa.GetComponent<Image>().color == Color.green)
-                {
-                    loa.GetComponent<Image>().color = Color.white;
-                    tra.GetComponent<Image>().color = Color.green;
-                }
+                MapMenuOption[MapMenuOptionNumber].GetComponent<Image>().color = Color.green;
             }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                if (MapMenuOptionNumber == 2)
+                {
+                    MapMenuOptionNumber = 0;
+                }
+                else if (MapMenuOptionNumber == 5)
+                {
+                    MapMenuOptionNumber = 3;
+                }
+                else if (MapMenuOptionNumber == 8)
+                {
+                    MapMenuOptionNumber = 6;
+                }
+                else
+                {
+                    MapMenuOptionNumber += 1;
+                }
+                for (int i = 0; i < 9; i++)
+                {
+                    MapMenuOption[i].GetComponent<Image>().color = Color.white;
+                }
+                MapMenuOption[MapMenuOptionNumber].GetComponent<Image>().color = Color.green;
+            }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                if (MapMenuOptionNumber == 0)
+                {
+                    MapMenuOptionNumber = 2;
+                }
+                else if (MapMenuOptionNumber == 3)
+                {
+                    MapMenuOptionNumber = 5;
+                }
+                else if (MapMenuOptionNumber == 6)
+                {
+                    MapMenuOptionNumber = 8;
+                }
+                else
+                {
+                    MapMenuOptionNumber -= 1;
+                }
+                for (int i = 0; i < 9; i++)
+                {
+                    MapMenuOption[i].GetComponent<Image>().color = Color.white;
+                }
+                MapMenuOption[MapMenuOptionNumber].GetComponent<Image>().color = Color.green;
+            }
+
             if (Input.GetKeyDown(KeyCode.J))
             {
-                if (go.GetComponent<Image>().color == Color.green)
+                if (MapMenuOption[0].GetComponent<Image>().color == Color.green)    //前進
                 {
                     audMap.PlayOneShot(Hit);
                     m = false;
                 }
-                if (forg.GetComponent<Image>().color == Color.green)
+                if (MapMenuOption[3].GetComponent<Image>().color == Color.green)    //背包
+                {
+                    OpenBackpack = true;
+                    MapMenu.SetActive(false);
+                    Backpack.SetActive(true);
+                    ItemField[0].transform.SetAsLastSibling();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        ItemField[i].GetComponent<Image>().sprite = ItemFieldSprite[2 * i + 1];
+                    }
+                    ItemFieldNum = 0;
+                    ItemField[0].GetComponent<Image>().sprite = ItemFieldSprite[0];
+                    BackpackChooseNum = 0;
+                    BackpackChoose.GetComponent<Transform>().SetParent(ItemBarSprite[0].GetComponent<Transform>());
+                    BackpackChoose.transform.localPosition = Vector3.zero;
+                    ItemFieldOpen[0] = true;
+                    itemPage[0] = 1;
+                    SetItemFieldArray();
+                    ItemPageArrangement(0);
+                }
+                if (MapMenuOption[4].GetComponent<Image>().color == Color.green)    //強化裝備
                 {
                     OpenStrengthen = true;
                     MapMenu.SetActive(false);
@@ -887,19 +915,19 @@ public class MapMove : MonoBehaviour
                     StrengthenChoose.transform.localPosition = Equipment[0].transform.localPosition;
                     EquipmentShow[0].SetActive(true);
                 }
-                if (sav.GetComponent<Image>().color == Color.green)
+                if (MapMenuOption[2].GetComponent<Image>().color == Color.green)    //存檔
                 {
                     audMap.PlayOneShot(Hit);
                     SaveRun = true;
                     StartCoroutine(SaveAni());
                 }
-                if (loa.GetComponent<Image>().color == Color.green)
+                if (MapMenuOption[5].GetComponent<Image>().color == Color.green)    //讀檔
                 {
                     audMap.PlayOneShot(Hit);
                     LoadRun = true;
                     StartCoroutine(LoadAni());
                 }
-                if (backmenu.GetComponent<Image>().color == Color.green)
+                if (MapMenuOption[8].GetComponent<Image>().color == Color.green)    //主畫面
                 {
                     audMap.PlayOneShot(Hit);
                     SceneManager.LoadScene("主畫面");
@@ -912,14 +940,14 @@ public class MapMove : MonoBehaviour
             step1 = true;
             Girl.transform.position = new Vector3(-130, 371, 0);
             talk.transform.localScale = Vector3.zero;
-            go.transform.localScale = Vector3.zero;
-            tra.transform.localScale = Vector3.zero;
-            forg.transform.localScale = Vector3.zero;
-            sav.transform.localScale = Vector3.zero;
-            loa.transform.localScale = Vector3.zero;
-            backmenu.transform.localScale = Vector3.zero;
+            for (int i = 0; i < 9; i++)
+            {
+                MapMenuOption[i].transform.localScale = Vector3.zero;
+            }
             for (int can = 0; can <= 3; can++)
+            {
                 cannotuse[can].GetComponent<Image>().fillAmount = 0;
+            }  
             CallLittleGirl.SetActive(true);
             MapMenu.SetActive(false);
         }
@@ -949,30 +977,42 @@ public class MapMove : MonoBehaviour
         }
         if (m == true && girlani == true && step3 == true)    //選項展開
         {
-            go.transform.localScale = Vector3.MoveTowards(go.transform.localScale, Vector3.one, 6f * Time.deltaTime);
-            if (go.transform.localScale.x >= 0.2f)
+            MapMenuOption[0].transform.localScale = Vector3.MoveTowards(MapMenuOption[0].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+            if (MapMenuOption[0].transform.localScale.x >= 0.2f)
             {
-                tra.transform.localScale = Vector3.MoveTowards(tra.transform.localScale, Vector3.one, 6f * Time.deltaTime);
-                if (tra.transform.localScale.x >= 0.2f)
+                MapMenuOption[1].transform.localScale = Vector3.MoveTowards(MapMenuOption[1].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                if (MapMenuOption[1].transform.localScale.x >= 0.2f)
                 {
-                    forg.transform.localScale = Vector3.MoveTowards(forg.transform.localScale, Vector3.one, 6f * Time.deltaTime);
-                    if (forg.transform.localScale.x >= 0.2f)
+                    MapMenuOption[2].transform.localScale = Vector3.MoveTowards(MapMenuOption[2].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                    if (MapMenuOption[2].transform.localScale.x >= 0.2f)
                     {
-                        sav.transform.localScale = Vector3.MoveTowards(sav.transform.localScale, Vector3.one, 6f * Time.deltaTime);
-                        if (sav.transform.localScale.x >= 0.2f)
+                        MapMenuOption[3].transform.localScale = Vector3.MoveTowards(MapMenuOption[3].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                        if (MapMenuOption[3].transform.localScale.x >= 0.2f)
                         {
-                            loa.transform.localScale = Vector3.MoveTowards(loa.transform.localScale, Vector3.one, 6f * Time.deltaTime);
-                            if (loa.transform.localScale.x >= 0.2f)
+                            MapMenuOption[4].transform.localScale = Vector3.MoveTowards(MapMenuOption[4].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                            if (MapMenuOption[4].transform.localScale.x >= 0.2f)
                             {
-                                backmenu.transform.localScale = Vector3.MoveTowards(backmenu.transform.localScale, Vector3.one, 6f * Time.deltaTime);
-                                if (backmenu.transform.localScale == Vector3.one)
+                                MapMenuOption[5].transform.localScale = Vector3.MoveTowards(MapMenuOption[5].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                                if (MapMenuOption[5].transform.localScale.x >= 0.2f)
                                 {
-                                    for (int can = 0; can <= 3; can++)
-                                        cannotuse[can].GetComponent<Image>().fillAmount += 2 * Time.deltaTime;
-                                    if(cannotuse[0].GetComponent<Image>().fillAmount == 1)
+                                    MapMenuOption[6].transform.localScale = Vector3.MoveTowards(MapMenuOption[6].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                                    if (MapMenuOption[6].transform.localScale.x >= 0.2f)
                                     {
-                                        step3 = false;
-                                        girlani = false;
+                                        MapMenuOption[7].transform.localScale = Vector3.MoveTowards(MapMenuOption[7].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                                        if (MapMenuOption[7].transform.localScale.x >= 0.2f)
+                                        {
+                                            MapMenuOption[8].transform.localScale = Vector3.MoveTowards(MapMenuOption[8].transform.localScale, Vector3.one, 6f * Time.deltaTime);
+                                            if (MapMenuOption[8].transform.localScale == Vector3.one)
+                                            {
+                                                for (int can = 0; can <= 3; can++)
+                                                    cannotuse[can].GetComponent<Image>().fillAmount += 2 * Time.deltaTime;
+                                                if (cannotuse[0].GetComponent<Image>().fillAmount == 1)
+                                                {
+                                                    step3 = false;
+                                                    girlani = false;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -1111,85 +1151,354 @@ public class MapMove : MonoBehaviour
 
     private void StrengthenCtrl()
     {
-        if (Input.GetKeyDown(KeyCode.S) && OpenStrengthen == true)
+        if(OpenStrengthen == true)
         {
-            if (StrengthenChoose.transform.localPosition == Equipment[0].transform.localPosition)
+            if (Input.GetKeyDown(KeyCode.S))
             {
-                StrengthenChoose.transform.localPosition = Equipment[1].transform.localPosition;
-                EquipmentShow[0].SetActive(false);
-                EquipmentShow[1].SetActive(true);
+                if (StrengthenChoose.transform.localPosition == Equipment[0].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[1].transform.localPosition;
+                    EquipmentShow[0].SetActive(false);
+                    EquipmentShow[1].SetActive(true);
+                }
+                else if (StrengthenChoose.transform.localPosition == Equipment[1].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[2].transform.localPosition;
+                    EquipmentShow[1].SetActive(false);
+                    EquipmentShow[2].SetActive(true);
+                }
+                else if (StrengthenChoose.transform.localPosition == Equipment[2].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[3].transform.localPosition;
+                    EquipmentShow[2].SetActive(false);
+                    EquipmentShow[3].SetActive(true);
+                }
+                else if (StrengthenChoose.transform.localPosition == Equipment[3].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[4].transform.localPosition;
+                    EquipmentShow[3].SetActive(false);
+                    EquipmentShow[4].SetActive(true);
+                }
+                else if (StrengthenChoose.transform.localPosition == Equipment[4].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[0].transform.localPosition;
+                    EquipmentShow[4].SetActive(false);
+                    EquipmentShow[0].SetActive(true);
+                }
             }
-            else if (StrengthenChoose.transform.localPosition == Equipment[1].transform.localPosition)
+            if (Input.GetKeyDown(KeyCode.W))
             {
-                StrengthenChoose.transform.localPosition = Equipment[2].transform.localPosition;
-                EquipmentShow[1].SetActive(false);
-                EquipmentShow[2].SetActive(true);
+                if (StrengthenChoose.transform.localPosition == Equipment[0].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[4].transform.localPosition;
+                    EquipmentShow[0].SetActive(false);
+                    EquipmentShow[4].SetActive(true);
+                }
+                else if (StrengthenChoose.transform.localPosition == Equipment[1].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[0].transform.localPosition;
+                    EquipmentShow[1].SetActive(false);
+                    EquipmentShow[0].SetActive(true);
+                }
+                else if (StrengthenChoose.transform.localPosition == Equipment[2].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[1].transform.localPosition;
+                    EquipmentShow[2].SetActive(false);
+                    EquipmentShow[1].SetActive(true);
+                }
+                else if (StrengthenChoose.transform.localPosition == Equipment[3].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[2].transform.localPosition;
+                    EquipmentShow[3].SetActive(false);
+                    EquipmentShow[2].SetActive(true);
+                }
+                else if (StrengthenChoose.transform.localPosition == Equipment[4].transform.localPosition)
+                {
+                    StrengthenChoose.transform.localPosition = Equipment[3].transform.localPosition;
+                    EquipmentShow[4].SetActive(false);
+                    EquipmentShow[3].SetActive(true);
+                }
             }
-            else if (StrengthenChoose.transform.localPosition == Equipment[2].transform.localPosition)
+            if (Input.GetKeyDown(KeyCode.J))
             {
-                StrengthenChoose.transform.localPosition = Equipment[3].transform.localPosition;
-                EquipmentShow[2].SetActive(false);
-                EquipmentShow[3].SetActive(true);
+                audMap.PlayOneShot(Hit);
             }
-            else if (StrengthenChoose.transform.localPosition == Equipment[3].transform.localPosition)
+            if (Input.GetKeyDown(KeyCode.K))
             {
-                StrengthenChoose.transform.localPosition = Equipment[4].transform.localPosition;
-                EquipmentShow[3].SetActive(false);
-                EquipmentShow[4].SetActive(true);
-            }
-            else if (StrengthenChoose.transform.localPosition == Equipment[4].transform.localPosition)
-            {
-                StrengthenChoose.transform.localPosition = Equipment[0].transform.localPosition;
-                EquipmentShow[4].SetActive(false);
-                EquipmentShow[0].SetActive(true);
+                audMap.PlayOneShot(OpenMenu);
+                Strengthen.SetActive(false);
+                MapMenu.SetActive(true);
+                OpenStrengthen = false;
+                for (int show = 0; show <= 4; show++)
+                {
+                    EquipmentShow[show].SetActive(false);
+                }
             }
         }
-        if (Input.GetKeyDown(KeyCode.W) && OpenStrengthen == true)
+    }
+
+    private void BackpackCtrl()
+    {
+        if (OpenBackpack == true)
         {
-            if (StrengthenChoose.transform.localPosition == Equipment[0].transform.localPosition)
+            if (ItemFieldNum == 0)
             {
-                StrengthenChoose.transform.localPosition = Equipment[4].transform.localPosition;
-                EquipmentShow[0].SetActive(false);
-                EquipmentShow[4].SetActive(true);
+                List<int> BackpackItemList = data.ItemQuantity.ToList();
+                var k = BackpackItemList.Where(x => x != 0);
+                int ItemPage = Mathf.CeilToInt(k.ToList().Count / 18.0f);
+                if (ItemPage == 0)
+                {
+                    ItemPage = 1;    //即使沒有道具也至少有一頁
+                }
+                itemPage[1] = ItemPage;    //欄位總頁數
             }
-            else if (StrengthenChoose.transform.localPosition == Equipment[1].transform.localPosition)
+            else if (ItemFieldNum == 1)
             {
-                StrengthenChoose.transform.localPosition = Equipment[0].transform.localPosition;
-                EquipmentShow[1].SetActive(false);
-                EquipmentShow[0].SetActive(true);
+                List<int> BackpackItemList = ItemPotionNumber.ToList();
+                var k = BackpackItemList.Where(x => x != 0);
+                int ItemPage = Mathf.CeilToInt(k.ToList().Count / 18.0f);
+                if (ItemPage == 0)
+                {
+                    ItemPage = 1;
+                }
+                itemPage[1] = ItemPage;
             }
-            else if (StrengthenChoose.transform.localPosition == Equipment[2].transform.localPosition)
+            else if (ItemFieldNum == 2)
             {
-                StrengthenChoose.transform.localPosition = Equipment[1].transform.localPosition;
-                EquipmentShow[2].SetActive(false);
-                EquipmentShow[1].SetActive(true);
+                List<int> BackpackItemList = ItemMaterialNumber.ToList();
+                var k = BackpackItemList.Where(x => x != 0);
+                int ItemPage = Mathf.CeilToInt(k.ToList().Count / 18.0f);
+                if (ItemPage == 0)
+                {
+                    ItemPage = 1;
+                }
+                itemPage[1] = ItemPage;
             }
-            else if (StrengthenChoose.transform.localPosition == Equipment[3].transform.localPosition)
+            else if (ItemFieldNum == 3)
             {
-                StrengthenChoose.transform.localPosition = Equipment[2].transform.localPosition;
-                EquipmentShow[3].SetActive(false);
-                EquipmentShow[2].SetActive(true);
+                List<int> BackpackItemList = ItemTaskNumber.ToList();
+                var k = BackpackItemList.Where(x => x != 0);
+                int ItemPage = Mathf.CeilToInt(k.ToList().Count / 18.0f);
+                if (ItemPage == 0)
+                {
+                    ItemPage = 1;
+                }
+                itemPage[1] = ItemPage;
             }
-            else if (StrengthenChoose.transform.localPosition == Equipment[4].transform.localPosition)
+
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                StrengthenChoose.transform.localPosition = Equipment[3].transform.localPosition;
-                EquipmentShow[4].SetActive(false);
-                EquipmentShow[3].SetActive(true);
+                itemPage[0] += 1;
+                if (itemPage[0] > itemPage[1])
+                {
+                    itemPage[0] = 1;
+                }
+                for (int i = 0; i < 18; i++)
+                {
+                    ItemBarSprite[i].GetComponent<Image>().sprite = null;
+                    ItemBarSprite[i].GetComponent<Image>().color = new Color(1, 1, 1, 0);
+                }
+                ItemPageArrangement(itemPageBreakpoint[itemPage[0] - 1]);
+            }
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                itemPage[0] -= 1;
+                if (itemPage[0] == 0)
+                {
+                    itemPage[0] = itemPage[1];
+                }
+                for (int i = 0; i < 18; i++)
+                {
+                    ItemBarSprite[i].GetComponent<Image>().sprite = null;
+                    ItemBarSprite[i].GetComponent<Image>().color = new Color(1, 1, 1, 0);
+                }
+                ItemPageArrangement(itemPageBreakpoint[itemPage[0] - 1]);
+            }
+            itemPageShow.text = itemPage[0] + "/" + itemPage[1];
+
+            if (Input.GetKeyDown(KeyCode.S) && OpenBackpack == true)
+            {
+                BackpackChooseNum += 6;
+                if (BackpackChooseNum >= 18)
+                {
+                    BackpackChooseNum -= 18;
+                }
+                //BackpackChoose.transform.localPosition = ItemBar[BackpackChooseNum].transform.localPosition;
+                BackpackChoose.GetComponent<Transform>().SetParent(ItemBarSprite[BackpackChooseNum].GetComponent<Transform>());
+                BackpackChoose.transform.localPosition = Vector3.zero;
+            }
+            if (Input.GetKeyDown(KeyCode.W) && OpenBackpack == true)
+            {
+                BackpackChooseNum -= 6;
+                if (BackpackChooseNum <= -1)
+                {
+                    BackpackChooseNum += 18;
+                }
+                //BackpackChoose.transform.localPosition = ItemBar[BackpackChooseNum].transform.localPosition;
+                BackpackChoose.GetComponent<Transform>().SetParent(ItemBarSprite[BackpackChooseNum].GetComponent<Transform>());
+                BackpackChoose.transform.localPosition = Vector3.zero;
+            }
+            if (Input.GetKeyDown(KeyCode.D) && OpenBackpack == true)
+            {
+                if (BackpackChooseNum == 5 || BackpackChooseNum == 11 || BackpackChooseNum == 17)
+                {
+                    BackpackChooseNum -= 5;
+                }
+                else
+                {
+                    BackpackChooseNum += 1;
+                }
+                //BackpackChoose.transform.localPosition = ItemBar[BackpackChooseNum].transform.localPosition;
+                BackpackChoose.GetComponent<Transform>().SetParent(ItemBarSprite[BackpackChooseNum].GetComponent<Transform>());
+                BackpackChoose.transform.localPosition = Vector3.zero;
+            }
+            if (Input.GetKeyDown(KeyCode.A) && OpenBackpack == true)
+            {
+                if (BackpackChooseNum == 0 || BackpackChooseNum == 6 || BackpackChooseNum == 12)
+                {
+                    BackpackChooseNum += 5;
+                }
+                else
+                {
+                    BackpackChooseNum -= 1;
+                }
+                //BackpackChoose.transform.localPosition = ItemBar[BackpackChooseNum].transform.localPosition;
+                BackpackChoose.GetComponent<Transform>().SetParent(ItemBarSprite[BackpackChooseNum].GetComponent<Transform>());
+                BackpackChoose.transform.localPosition = Vector3.zero;
+            }
+
+            if (ItemBarSprite[BackpackChooseNum].GetComponent<Image>().sprite != null)
+            {
+                ItemManager.Item(ItemBarSprite[BackpackChooseNum].GetComponent<Image>().sprite.name);
+                ItemIntroShow.SetActive(true);
+                ItemIntroShow.GetComponent<Image>().sprite = ItemManager.ShowBackpackItem;
+                ItemIntro[0].text = ItemBarSprite[BackpackChooseNum].GetComponent<Image>().sprite.name;
+                ItemIntro[1].text = ItemManager.ItemType;
+                ItemIntro[2].text = ItemManager.ItemIntro;
+            }
+            else if (ItemBarSprite[BackpackChooseNum].GetComponent<Image>().sprite == null)
+            {
+                ItemIntroShow.SetActive(false);
+                ItemIntroShow.GetComponent<Image>().sprite = null;
+                ItemIntro[0].text = null;
+                ItemIntro[1].text = null;
+                ItemIntro[2].text = null;
+            }
+
+            if (Input.GetKeyDown(KeyCode.E) && OpenBackpack == true)
+            {
+                ItemFieldNum += 1;
+                if (ItemFieldNum > 3)
+                {
+                    ItemFieldNum = 0;
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    ItemField[i].GetComponent<Image>().sprite = ItemFieldSprite[2 * i + 1];
+                }
+                ItemField[ItemFieldNum].transform.SetAsLastSibling();
+                ItemField[ItemFieldNum].GetComponent<Image>().sprite = ItemFieldSprite[2 * ItemFieldNum];
+
+                for (int i = 0; i < 18; i++)
+                {
+                    ItemBarSprite[i].GetComponent<Image>().sprite = null;
+                    ItemBarSprite[i].GetComponent<Image>().color = new Color(1, 1, 1, 0);
+                }
+                itemPage[0] = 1;
+                ItemPageArrangement(0);
+            }
+            if (Input.GetKeyDown(KeyCode.Q) && OpenBackpack == true)
+            {
+                ItemFieldNum -= 1;
+                if (ItemFieldNum < 0)
+                {
+                    ItemFieldNum = 3;
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    ItemField[i].GetComponent<Image>().sprite = ItemFieldSprite[2 * i + 1];
+                }
+                ItemField[ItemFieldNum].transform.SetAsLastSibling();
+                ItemField[ItemFieldNum].GetComponent<Image>().sprite = ItemFieldSprite[2 * ItemFieldNum];
+
+                for (int i = 0; i < 18; i++)
+                {
+                    ItemBarSprite[i].GetComponent<Image>().sprite = null;
+                    ItemBarSprite[i].GetComponent<Image>().color = new Color(1, 1, 1, 0);
+                }
+                itemPage[0] = 1;
+                ItemPageArrangement(0);
+            }
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                audMap.PlayOneShot(OpenMenu);
+                Backpack.SetActive(false);
+                MapMenu.SetActive(true);
+                OpenBackpack = false;
+                for (int i = 0; i <= 17; i++)
+                {
+                    ItemBarSprite[i].GetComponent<Image>().sprite = null;
+                    ItemBarSprite[i].GetComponent<Image>().color = new Color(1, 1, 1, 0);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                audMap.PlayOneShot(Hit);
             }
         }
-        if (Input.GetKeyDown(KeyCode.J) && OpenStrengthen == true)
+    }
+
+    private void SetItemFieldArray()    //設定道具陣列
+    {
+        for (int i = 0; i < 50; i++)
         {
-            audMap.PlayOneShot(Hit);
+            ItemPotionNumber[i] = data.ItemQuantity[i];
         }
-        if (Input.GetKeyDown(KeyCode.K) && OpenStrengthen == true)
+        for (int i = 50; i < 120; i++)
         {
-            audMap.PlayOneShot(OpenMenu);
-            Strengthen.SetActive(false);
-            MapMenu.SetActive(true);
-            OpenStrengthen = false;
-            for (int show = 0; show <= 4; show++)
+            ItemMaterialNumber[i] = data.ItemQuantity[i];
+        }
+        for (int i = 120; i < 150; i++)
+        {
+            ItemTaskNumber[i] = data.ItemQuantity[i];
+        }
+    }
+
+    private void ItemPageArrangement(int Number)    //設定道具顯示
+    {
+        int[] itemNumber = new int[150];
+        if (ItemFieldNum == 0)
+        {
+            itemNumber = data.ItemQuantity;
+        }
+        else if (ItemFieldNum == 1)
+        {
+            itemNumber = ItemPotionNumber;
+        }
+        else if (ItemFieldNum == 2)
+        {
+            itemNumber = ItemMaterialNumber;
+        }
+        else if (ItemFieldNum == 3)
+        {
+            itemNumber = ItemTaskNumber;
+        }
+        for (int i = Number; i < 150; i++)
+        {
+            for (int j = 0; j < 18; j++)
             {
-                EquipmentShow[show].SetActive(false);
+                if (itemNumber[i] != 0 && ItemBarSprite[j].GetComponent<Image>().sprite == null)
+                {
+                    ItemBarSprite[j].SetActive(true);
+                    ItemBarSprite[j].GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                    ItemBarSprite[j].GetComponent<Image>().sprite = ItemManager.BackpackItemSprite[i];
+                    if (ItemBarSprite[17].GetComponent<Image>().color == new Color(1, 1, 1, 1) && ItemBarSprite[17].GetComponent<Image>().sprite != null)
+                    {
+                        itemPageBreakpoint[itemPage[0]] = i + 1;
+                    }
+                    break;
+                }
             }
         }
     }
@@ -1347,10 +1656,6 @@ public class MapMove : MonoBehaviour
         public int ItemMax;
         public int[] ItemNumber;
         public int[] ItemQuantity;
-        public int RedPoison;
-        public int BluePoison;
-        public int BuffPoison;
-        public int UndebuffPoison;
         public int HeadwearLevel;
         public int SwordLevel;
         public int ShieldLevel;
