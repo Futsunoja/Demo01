@@ -66,6 +66,7 @@ public class StoryOpen : MonoBehaviour
         PlayerPrefs.SetString("Playerdata", JsonUtility.ToJson(data));    //存取新資料
         #endregion
 
+        aud.volume = 0.2f;
         canInput = false;
         runDialogue = true;
         dialogue = -1;
